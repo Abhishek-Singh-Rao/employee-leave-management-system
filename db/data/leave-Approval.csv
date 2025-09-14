@@ -1,0 +1,9 @@
+employeeId,managerName,decision,comments
+E001,Alice Manager,Approved,Enjoy your trip
+E003,Bob Lead,Approved,Bank work allowed
+E004,Carol Supervisor,Rejected,Too many people off
+E005,Alice Manager,Approved,Take care
+E006,Eva Director,Approved,Congratulations!
+E008,Bob Lead,Approved,Noted
+E009,Daniel Head,Approved,Rest well
+E010,Alice Manager,Approved,Bon voyage

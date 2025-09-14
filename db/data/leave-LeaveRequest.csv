@@ -1,0 +1,11 @@
+employeeId,leaveTypeCode,startDate,endDate,days,status,reason
+E001,ANNUAL,2025-08-01,2025-08-05,5,Approved,Family trip
+E002,SICK,2025-09-05,2025-09-07,3,Pending,Fever and rest
+E003,CASUAL,2025-09-10,2025-09-11,2,Approved,Urgent bank work
+E004,ANNUAL,2025-09-15,2025-09-20,6,Rejected,Vacation
+E005,SICK,2025-09-07,2025-09-08,2,Approved,Dental surgery
+E006,PATERNITY,2025-07-01,2025-07-15,15,Approved,Birth of child
+E007,ANNUAL,2025-09-25,2025-09-30,6,Pending,Outstation wedding
+E008,CASUAL,2025-08-18,2025-08-18,1,Approved,One day personal
+E009,SICK,2025-09-12,2025-09-13,2,Approved,Cold and cough
+E010,ANNUAL,2025-08-22,2025-08-28,7,Approved,Family vacation

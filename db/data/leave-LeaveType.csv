@@ -1,0 +1,8 @@
+code,name,maxDays
+ANNUAL,Annual Leave,30
+SICK,Sick Leave,10
+CASUAL,Casual Leave,12
+PATERNITY,Paternity Leave,15
+MATERNITY,Maternity Leave,180
+BEREAVEMENT,Bereavement Leave,7
+UNPAID,Unpaid Leave,999

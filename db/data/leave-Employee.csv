@@ -1,0 +1,16 @@
+empId,name,email,leaveBalance
+E001,John Doe,john.doe@example.com,15
+E002,Jane Smith,jane.smith@example.com,20
+E003,David Johnson,david.johnson@example.com,8
+E004,Emily Davis,emily.davis@example.com,25
+E005,Michael Brown,michael.brown@example.com,5
+E006,Sophia Wilson,sophia.wilson@example.com,30
+E007,James Taylor,james.taylor@example.com,18
+E008,Olivia Martin,olivia.martin@example.com,22
+E009,Liam Thompson,liam.thompson@example.com,12
+E010,Ava Anderson,ava.anderson@example.com,28
+E011,Noah White,noah.white@example.com,6
+E012,Isabella Lewis,isabella.lewis@example.com,14
+E013,Lucas Hall,lucas.hall@example.com,17
+E014,Mia Young,mia.young@example.com,19
+E015,Ethan King,ethan.king@example.com,9
