@@ -1,0 +1,89 @@
+<mvc:View
+    controllerName="com.company.leavemanagement.controller.Employees"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:core="sap.ui.core"
+    xmlns="sap.m">
+    
+    <Page title="{i18n>employees}" showNavButton="false">
+        <content>
+            <VBox class="sapUiMediumMargin">
+                <!-- Header Toolbar -->
+                <Toolbar>
+                    <Title text="{i18n>employees}" level="H2"/>
+                    <ToolbarSpacer/>
+                    <SearchField 
+                        width="20rem" 
+                        placeholder="Search employees..." 
+                        search="onSearch"
+                        liveChange="onSearch"/>
+                    <Button 
+                        text="{i18n>addEmployee}" 
+                        icon="sap-icon://add" 
+                        type="Emphasized"
+                        press="onAddEmployee"/>
+                    <Button 
+                        text="Refresh" 
+                        icon="sap-icon://refresh" 
+                        press="onRefresh"/>
+                </Toolbar>
+                
+                <!-- Employees Table -->
+                <Table 
+                    id="employeesTable"
+                    items="{/Employees}"
+                    growing="true"
+                    growingThreshold="20"
+                    mode="None"
+                    busy="{view>/busy}"
+                    class="employeeTable sapUiResponsiveMargin">
+                    <headerToolbar>
+                        <Toolbar>
+                            <Title text="Employee List"/>
+                        </Toolbar>
+                    </headerToolbar>
+                    <columns>
+                        <Column>
+                            <Text text="{i18n>employeeId}"/>
+                        </Column>
+                        <Column>
+                            <Text text="{i18n>employeeName}"/>
+                        </Column>
+                        <Column>
+                            <Text text="{i18n>email}"/>
+                        </Column>
+                        <Column>
+                            <Text text="{i18n>leaveBalance}"/>
+                        </Column>
+                        <Column width="8rem">
+                            <Text text="Actions"/>
+                        </Column>
+                    </columns>
+                    <items>
+                        <ColumnListItem>
+                            <cells>
+                                <ObjectIdentifier 
+                                    title="{empId}"
+                                    titleActive="false"/>
+                                <ObjectIdentifier 
+                                    title="{name}"
+                                    titleActive="false"/>
+                                <Text text="{email}"/>
+                                <ObjectNumber 
+                                    number="{leaveBalance}"
+                                    unit="days"
+                                    state="{path: 'leaveBalance', formatter: '.formatter.formatLeaveBalanceState'}"/>
+                                <HBox>
+                                    <Button 
+                                        icon="sap-icon://delete" 
+                                        type="Transparent"
+                                        tooltip="Delete Employee"
+                                        press="onDeleteEmployee"/>
+                                </HBox>
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+            </VBox>
+        </content>
+    </Page>
+</mvc:View>

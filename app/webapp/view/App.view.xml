@@ -1,0 +1,61 @@
+<mvc:View
+    controllerName="com.company.leavemanagement.controller.App"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    displayBlock="true">
+
+    <Shell id="shell">
+        <App id="app" class="myAppDemoWT">
+            <pages>
+                <Page id="page" title="{i18n>appTitle}">
+                    <content>
+                        <IconTabBar id="idIconTabBarMulti" expanded="true" class="sapUiResponsiveMargin">
+                            <items>
+                                <IconTabFilter id="dashboard" text="{i18n>dashboard}" icon="sap-icon://pie-chart">
+                                    <content>
+                                        <mvc:XMLView
+                                            id="dashboardView"
+                                            viewName="com.company.leavemanagement.view.Dashboard" />
+                                    </content>
+                                </IconTabFilter>
+
+                                <IconTabFilter id="employees" text="{i18n>employees}" icon="sap-icon://employee">
+                                    <content>
+                                        <mvc:XMLView
+                                            id="employeesView"
+                                            viewName="com.company.leavemanagement.view.Employees" />
+                                    </content>
+                                </IconTabFilter>
+
+                                <IconTabFilter id="requests" text="{i18n>leaveRequests}" icon="sap-icon://request">
+                                    <content>
+                                        <mvc:XMLView
+                                            id="leaveRequestsView"
+                                            viewName="com.company.leavemanagement.view.LeaveRequests" />
+                                    </content>
+                                </IconTabFilter>
+
+                                <IconTabFilter id="approvals" text="{i18n>approvals}" icon="sap-icon://approvals">
+                                    <content>
+                                        <mvc:XMLView
+                                            id="approvalsView"
+                                            viewName="com.company.leavemanagement.view.Approvals" />
+                                    </content>
+                                </IconTabFilter>
+
+                                <IconTabFilter id="leavetypes" text="{i18n>leaveTypes}" icon="sap-icon://library">
+                                    <content>
+                                        <mvc:XMLView
+                                            id="leaveTypesView"
+                                            viewName="com.company.leavemanagement.view.LeaveTypes" />
+                                    </content>
+                                </IconTabFilter>
+                            </items>
+                        </IconTabBar>
+                    </content>
+                </Page>
+            </pages>
+        </App>
+    </Shell>
+</mvc:View>

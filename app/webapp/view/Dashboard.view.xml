@@ -1,0 +1,151 @@
+<mvc:View
+    controllerName="com.company.leavemanagement.controller.Dashboard"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns:core="sap.ui.core"
+    xmlns="sap.m"
+    xmlns:f="sap.f"
+    xmlns:suite="sap.suite.ui.commons">
+    
+    <Page title="{i18n>dashboard}" showNavButton="false">
+        <content>
+            <VBox class="sapUiMediumMargin">
+                <!-- Dashboard Header -->
+                <Panel headerText="{i18n>dashboard}" class="sapUiResponsiveMargin">
+                    <content>
+                        <HBox justifyContent="SpaceBetween" alignItems="Center" class="sapUiMediumMarginBottom">
+                            <Title text="Leave Management Overview" level="H2"/>
+                            <Button text="Refresh" icon="sap-icon://refresh" press="onRefresh"/>
+                        </HBox>
+                        
+                        <!-- Statistics Tiles -->
+                        <f:GridContainer>
+                            <f:GridContainerSettings rowSize="5rem" columnSize="16rem" gap="1rem"/>
+                            
+                            <!-- Total Employees Tile -->
+                            <GenericTile 
+                                id="employeesTile"
+                                class="dashboardTile leaveBalanceTile"
+                                header="{i18n>totalEmployees}"
+                                subheader="Active in system"
+                                press="onTilePress">
+                                <tileContent>
+                                    <TileContent>
+                                        <content>
+                                            <NumericContent 
+                                                value="{dashboard>/totalEmployees}"
+                                                icon="sap-icon://employee"/>
+                                        </content>
+                                    </TileContent>
+                                </tileContent>
+                            </GenericTile>
+                            
+                            <!-- Pending Requests Tile -->
+                            <GenericTile 
+                                id="pendingTile"
+                                class="dashboardTile pendingRequestsTile"
+                                header="{i18n>pendingRequests}"
+                                subheader="Awaiting approval"
+                                press="onTilePress">
+                                <tileContent>
+                                    <TileContent>
+                                        <content>
+                                            <NumericContent 
+                                                value="{dashboard>/pendingRequests}"
+                                                icon="sap-icon://pending"
+                                                state="Critical"/>
+                                        </content>
+                                    </TileContent>
+                                </tileContent>
+                            </GenericTile>
+                            
+                            <!-- Approved Today Tile -->
+                            <GenericTile 
+                                id="approvedTile"
+                                class="dashboardTile approvedRequestsTile"
+                                header="{i18n>approvedToday}"
+                                subheader="Approved today"
+                                press="onTilePress">
+                                <tileContent>
+                                    <TileContent>
+                                        <content>
+                                            <NumericContent 
+                                                value="{dashboard>/approvedToday}"
+                                                icon="sap-icon://accept"
+                                                state="Good"/>
+                                        </content>
+                                    </TileContent>
+                                </tileContent>
+                            </GenericTile>
+                            
+                            <!-- Total Managers Tile -->
+                            <GenericTile 
+                                class="dashboardTile"
+                                header="{i18n>totalManagers}"
+                                subheader="Active managers">
+                                <tileContent>
+                                    <TileContent>
+                                        <content>
+                                            <NumericContent 
+                                                value="{dashboard>/totalManagers}"
+                                                icon="sap-icon://manager"/>
+                                        </content>
+                                    </TileContent>
+                                </tileContent>
+                            </GenericTile>
+                        </f:GridContainer>
+                    </content>
+                </Panel>
+                
+                <!-- Recent Requests Table -->
+                <Panel headerText="{i18n>recentRequests}" class="sapUiResponsiveMargin">
+                    <content>
+                        <Table 
+                            id="recentRequestsTable"
+                            items="{dashboard>/recentRequests}"
+                            growing="true"
+                            growingThreshold="10"
+                            mode="None">
+                            <columns>
+                                <Column>
+                                    <Text text="{i18n>employeeName}"/>
+                                </Column>
+                                <Column>
+                                    <Text text="{i18n>leaveType}"/>
+                                </Column>
+                                <Column>
+                                    <Text text="{i18n>startDate}"/>
+                                </Column>
+                                <Column>
+                                    <Text text="{i18n>endDate}"/>
+                                </Column>
+                                <Column>
+                                    <Text text="{i18n>days}"/>
+                                </Column>
+                                <Column>
+                                    <Text text="{i18n>status}"/>
+                                </Column>
+                                <Column>
+                                    <Text text="{i18n>reason}"/>
+                                </Column>
+                            </columns>
+                            <items>
+                                <ColumnListItem>
+                                    <Text text="{dashboard>employee/name}"/>
+                                    <Text text="{dashboard>leaveType/name}"/>
+                                    <Text text="{path: 'dashboard>startDate', formatter: '.formatter.formatDate'}"/>
+                                    <Text text="{path: 'dashboard>endDate', formatter: '.formatter.formatDate'}"/>
+                                    <Text text="{dashboard>days}"/>
+                                    <ObjectStatus 
+                                        text="{dashboard>status}"
+                                        state="{path: 'dashboard>status', formatter: '.formatter.formatStatus'}"
+                                        icon="{path: 'dashboard>status', formatter: '.formatter.getStatusIcon'}"/>
+                                    <Text text="{dashboard>reason}" maxLines="2"/>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
+                    </content>
+                </Panel>
+            </VBox>
+        </content>
+    </Page>
+</mvc:View>

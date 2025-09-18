@@ -1,0 +1,31 @@
+{
+  "name": "employee-leave-management-ui",
+  "version": "1.0.0",
+  "description": "Employee Leave Management System UI5 App",
+  "main": "webapp/index.html",
+  "scripts": {
+    "start": "ui5 serve --open",
+    "build": "ui5 build --dest dist",
+    "deploy": "cf deploy",
+    "test": "npm run lint",
+    "lint": "eslint webapp"
+  },
+  "dependencies": {
+    "@sap/ui5-builder-webide-extension": "^1.1.8"
+  },
+  "devDependencies": {
+    "@sap/ux-ui5-tooling": "1",
+    "@ui5/cli": "^4.0.26",
+    "@ui5/logger": "^2.0.1",
+    "rimraf": "3.0.2"
+  },
+  "ui5": {
+    "dependencies": [
+      "@sap/ui5-builder-webide-extension",
+      "@sap/ux-ui5-tooling"
+    ]
+  },
+  "sapux": [
+    "app/employee-leave-management-ui"
+  ]
+}
