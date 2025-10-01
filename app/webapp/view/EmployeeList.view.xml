@@ -1,0 +1,186 @@
+<mvc:View
+    controllerName="com.company.leavemanagement.controller.EmployeeList"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    displayBlock="true">
+
+    <Page title="Employee Management" showNavButton="true" navButtonPress="onNavBack">
+        <content>
+            
+            <!-- Header with actions -->
+            <VBox class="sapUiContentPadding">
+                
+                <!-- Action toolbar -->
+                <Toolbar class="sapUiMediumMarginBottom">
+                    <Title text="Employees" level="H2"/>
+                    <ToolbarSpacer/>
+                    <Button 
+                        text="Add Employee" 
+                        icon="sap-icon://add-employee" 
+                        type="Emphasized"
+                        press="onAddEmployee"/>
+                    <Button 
+                        text="Refresh" 
+                        icon="sap-icon://refresh" 
+                        type="Transparent"
+                        press="onRefresh"/>
+                </Toolbar>
+
+                <!-- Filter bar -->
+                <Panel headerText="Search &amp; Filter" expandable="true" expanded="false" class="sapUiResponsiveMargin">
+                    <content>
+                        <VBox class="sapUiSmallMargin">
+                            <HBox class="sapUiTinyMarginBottom">
+                                <SearchField 
+                                    id="searchField"
+                                    placeholder="Search by name, email, or employee ID..."
+                                    width="300px"
+                                    class="sapUiSmallMarginEnd"
+                                    search="onSearch"
+                                    liveChange="onSearchLiveChange"/>
+                                
+                                <ComboBox 
+                                    id="managerFilter"
+                                    placeholder="Filter by Manager"
+                                    width="200px"
+                                    items="{/Managers}"
+                                    class="sapUiSmallMarginEnd"
+                                    selectionChange="onManagerFilter">
+                                    <items>
+                                        <core:Item key="{ID}" text="{name}"/>
+                                    </items>
+                                </ComboBox>
+                                
+                                <Button 
+                                    text="Clear Filters" 
+                                    type="Transparent"
+                                    press="onClearFilters"/>
+                            </HBox>
+                        </VBox>
+                    </content>
+                </Panel>
+
+                <!-- Employee table -->
+                <Table 
+                    id="employeeTable"
+                    inset="false"
+                        items="{
+                            path: '/Employees', 
+                            parameters: {
+                                $expand: 'manager'
+                            },
+                            sorter: {
+                                path: 'empId', 
+                                descending: false
+                            }
+                        }"
+                    mode="SingleSelect"
+                    growing="true"
+                    growingThreshold="20"
+                    class="sapUiResponsiveMargin">
+                    
+                    <headerToolbar>
+                        <Toolbar>
+                            <Title text="Employee List" level="H3"/>
+                            <ToolbarSpacer/>
+                            <Button 
+                                icon="sap-icon://excel-attachment" 
+                                tooltip="Export to Excel"
+                                press="onExport"/>
+                        </Toolbar>
+                    </headerToolbar>
+
+                    <columns>
+                        <Column width="10rem">
+                            <Text text="Employee ID"/>
+                        </Column>
+                        <Column width="15rem">
+                            <Text text="Name"/>
+                        </Column>
+                        <Column width="20rem">
+                            <Text text="Email"/>
+                        </Column>
+                        <Column width="12rem">
+                            <Text text="Manager"/>
+                        </Column>
+                        <Column width="10rem" hAlign="Center">
+                            <Text text="Leave Balance"/>
+                        </Column>
+                        <Column width="12rem" hAlign="Center">
+                            <Text text="Last Modified"/>
+                        </Column>
+                        <Column width="10rem" hAlign="Center">
+                            <Text text="Actions"/>
+                        </Column>
+                    </columns>
+
+                    <items>
+                        <ColumnListItem press="onEmployeePress">
+                            <cells>
+                                <ObjectIdentifier 
+                                    title="{empId}"
+                                    class="sapMTableContentMargin"/>
+                                    
+                                <ObjectIdentifier 
+                                    title="{name}"
+                                    class="sapMTableContentMargin"/>
+                                    
+                                <Text text="{email}" class="sapMTableContentMargin"/>
+                                
+                                <Text text="{manager/name}" class="sapMTableContentMargin"/>
+                                
+                                <ObjectNumber 
+                                    number="{leaveBalance}" 
+                                    unit="days"
+                                    state="{= ${leaveBalance} &gt; 10 ? 'Success' : ${leaveBalance} &gt; 5 ? 'Warning' : 'Error'}"
+                                    class="sapMTableContentMargin"/>
+                                    
+                                <Text text="{path: 'modifiedAt', formatter: '.formatDate'}" 
+                                      class="sapMTableContentMargin"/>
+                                
+                                <HBox class="sapMTableContentMargin">
+                                    <Button 
+                                        icon="sap-icon://edit" 
+                                        type="Transparent"
+                                        tooltip="Edit Employee"
+                                        press="onEditEmployee"/>
+                                    <Button 
+                                        icon="sap-icon://delete" 
+                                        type="Transparent"
+                                        tooltip="Delete Employee"
+                                        press="onDeleteEmployee"/>
+                                </HBox>
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+
+                <!-- Summary statistics -->
+                <Panel headerText="Summary Statistics" class="sapUiResponsiveMargin">
+                    <content>
+                        <HBox class="sapUiSmallMargin" justifyContent="SpaceAround">
+                            <VBox alignItems="Center">
+                                <Text text="{local>/stats/totalEmployees}" class="sapThemeHighlight-asColor sapUiLargeText"/>
+                                <Label text="Total Employees"/>
+                            </VBox>
+                            <VBox alignItems="Center">
+                                <Text text="{local>/stats/avgLeaveBalance}" class="sapThemeHighlight-asColor sapUiLargeText"/>
+                                <Label text="Avg Leave Balance"/>
+                            </VBox>
+                            <VBox alignItems="Center">
+                                <Text text="{local>/stats/lowBalanceCount}" class="sapThemeCritical-asColor sapUiLargeText"/>
+                                <Label text="Low Balance (less than 5 days)"/>
+                            </VBox>
+                            <VBox alignItems="Center">
+                                <Text text="{local>/stats/managersCount}" class="sapThemeHighlight-asColor sapUiLargeText"/>
+                                <Label text="Total Managers"/>
+                            </VBox>
+                        </HBox>
+                    </content>
+                </Panel>
+            </VBox>
+        </content>
+    </Page>
+
+</mvc:View>

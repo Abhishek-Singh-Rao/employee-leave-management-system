@@ -1,0 +1,200 @@
+<mvc:View
+    controllerName="com.company.leavemanagement.controller.EmployeeDetail"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:f="sap.ui.layout.form"
+    xmlns:core="sap.ui.core"
+    displayBlock="true">
+
+    <Page title="Employee Details" showNavButton="true" navButtonPress="onNavBack">
+        
+        <!-- Header with employee info -->
+        <customHeader>
+            <Bar>
+                <contentLeft>
+                    <Button icon="sap-icon://nav-back" press="onNavBack"/>
+                </contentLeft>
+                <contentMiddle>
+                    <Title text="{name}" level="H1"/>
+                </contentMiddle>
+                <contentRight>
+                    <Button text="Edit" icon="sap-icon://edit" type="Emphasized" press="onEdit"/>
+                    <Button text="Delete" icon="sap-icon://delete" type="Transparent" press="onDelete"/>
+                </contentRight>
+            </Bar>
+        </customHeader>
+
+        <content>
+            <VBox class="sapUiContentPadding">
+                
+                <!-- Employee Information Panel -->
+                <Panel headerText="Employee Information" class="sapUiResponsiveMargin">
+                    <content>
+                        <f:SimpleForm
+                            layout="ResponsiveGridLayout"
+                            labelSpanXL="3"
+                            labelSpanL="3"
+                            labelSpanM="3"
+                            labelSpanS="12"
+                            adjustLabelSpan="false"
+                            emptySpanXL="1"
+                            emptySpanL="1"
+                            emptySpanM="1"
+                            emptySpanS="0"
+                            columnsXL="2"
+                            columnsL="2"
+                            columnsM="1"
+                            singleContainerFullSize="false"
+                            editable="false">
+                            
+                            <f:content>
+                                <Label text="Employee ID"/>
+                                <Text text="{empId}"/>
+                                
+                                <Label text="Full Name"/>
+                                <Text text="{name}"/>
+                                
+                                <Label text="Email Address"/>
+                                <Link text="{email}" href="mailto:{email}"/>
+                                
+                                <Label text="Manager"/>
+                                <Text text="{manager/name}" emptyIndicatorMode="On"/>
+                                
+                                <Label text="Leave Balance"/>
+                                <ObjectNumber 
+                                    number="{leaveBalance}" 
+                                    unit="days"
+                                    state="{= ${leaveBalance} > 10 ? 'Success' : ${leaveBalance} > 5 ? 'Warning' : 'Error'}"/>
+                                
+                                <Label text="Created"/>
+                                <Text text="{path: 'createdAt', formatter: '.formatDateTime'}"/>
+                                
+                                <Label text="Last Modified"/>
+                                <Text text="{path: 'modifiedAt', formatter: '.formatDateTime'}"/>
+                            </f:content>
+                        </f:SimpleForm>
+                    </content>
+                </Panel>
+
+                <!-- Leave Requests Panel -->
+                <Panel headerText="Leave Requests History" class="sapUiResponsiveMargin">
+                    <content>
+                        <Table 
+                            items="{local>/leaveRequests}"
+                            growing="true"
+                            growingThreshold="10"
+                            noDataText="No leave requests found for this employee">
+                            
+                            <columns>
+                                <Column>
+                                    <Text text="Leave Type"/>
+                                </Column>
+                                <Column>
+                                    <Text text="Start Date"/>
+                                </Column>
+                                <Column>
+                                    <Text text="End Date"/>
+                                </Column>
+                                <Column>
+                                    <Text text="Days"/>
+                                </Column>
+                                <Column>
+                                    <Text text="Status"/>
+                                </Column>
+                                <Column>
+                                    <Text text="Reason"/>
+                                </Column>
+                            </columns>
+                            
+                            <items>
+                                <ColumnListItem>
+                                    <cells>
+                                        <Text text="{local>leaveType/name}"/>
+                                        <Text text="{path: 'local>startDate', formatter: '.formatDate'}"/>
+                                        <Text text="{path: 'local>endDate', formatter: '.formatDate'}"/>
+                                        <ObjectNumber number="{local>days}" unit="days"/>
+                                        <ObjectStatus 
+                                            text="{local>status}"
+                                            state="{= ${local>status} === 'Approved' ? 'Success' : ${local>status} === 'Pending' ? 'Warning' : 'Error'}"/>
+                                        <Text text="{local>reason}" maxLines="2"/>
+                                    </cells>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
+                        
+                        <Button 
+                            text="New Leave Request" 
+                            icon="sap-icon://add" 
+                            type="Emphasized"
+                            class="sapUiMediumMarginTop"
+                            press="onNewLeaveRequest"/>
+                    </content>
+                </Panel>
+
+                <!-- Statistics Panel -->
+                <Panel headerText="Leave Statistics" class="sapUiResponsiveMargin">
+                    <content>
+                        <HBox class="sapUiMediumMargin" justifyContent="SpaceAround">
+                            <VBox alignItems="Center">
+                                <Text text="{local>/stats/totalRequests}" class="sapThemeHighlight-asColor sapUiLargeText"/>
+                                <Label text="Total Requests"/>
+                            </VBox>
+                            <VBox alignItems="Center">
+                                <Text text="{local>/stats/approvedRequests}" class="sapThemePositive-asColor sapUiLargeText"/>
+                                <Label text="Approved"/>
+                            </VBox>
+                            <VBox alignItems="Center">
+                                <Text text="{local>/stats/pendingRequests}" class="sapThemeWarning-asColor sapUiLargeText"/>
+                                <Label text="Pending"/>
+                            </VBox>
+                            <VBox alignItems="Center">
+                                <Text text="{local>/stats/rejectedRequests}" class="sapThemeCritical-asColor sapUiLargeText"/>
+                                <Label text="Rejected"/>
+                            </VBox>
+                            <VBox alignItems="Center">
+                                <Text text="{local>/stats/totalDaysTaken}" class="sapThemeHighlight-asColor sapUiLargeText"/>
+                                <Label text="Days Taken"/>
+                            </VBox>
+                        </HBox>
+                    </content>
+                </Panel>
+
+                <!-- Quick Actions Panel -->
+                <Panel headerText="Quick Actions" class="sapUiResponsiveMargin">
+                    <content>
+                        <HBox class="sapUiMediumMargin">
+                            <Button 
+                                text="Send Email" 
+                                icon="sap-icon://email" 
+                                type="Default"
+                                class="sapUiSmallMarginEnd"
+                                press="onSendEmail"/>
+                            
+                            <Button 
+                                text="View Calendar" 
+                                icon="sap-icon://calendar" 
+                                type="Default"
+                                class="sapUiSmallMarginEnd"
+                                press="onViewCalendar"/>
+                            
+                            <Button 
+                                text="Generate Report" 
+                                icon="sap-icon://document" 
+                                type="Default"
+                                class="sapUiSmallMarginEnd"
+                                press="onGenerateReport"/>
+                            
+                            <Button 
+                                text="Adjust Balance" 
+                                icon="sap-icon://validate" 
+                                type="Default"
+                                press="onAdjustBalance"/>
+                        </HBox>
+                    </content>
+                </Panel>
+
+            </VBox>
+        </content>
+    </Page>
+
+</mvc:View>

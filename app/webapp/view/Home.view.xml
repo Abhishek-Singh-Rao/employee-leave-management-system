@@ -1,0 +1,202 @@
+<mvc:View
+    controllerName="com.company.leavemanagement.controller.Home"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    displayBlock="true">
+
+    <Page title="Employee Leave Management Dashboard" class="sapUiContentPadding">
+        <content>
+            <VBox class="sapUiMediumMargin">
+                
+                <!-- System Status Section -->
+                <Panel headerText="System Status" class="sapUiResponsiveMargin">
+                    <content>
+                        <VBox class="sapUiSmallMargin">
+                            <Label text="Backend Connection:" class="sapUiTinyMarginBottom"/>
+                            <ObjectStatus text="Connected" state="Success" icon="sap-icon://connected"/>
+                            
+                            <Label text="Database:" class="sapUiSmallMarginTop sapUiTinyMarginBottom"/>
+                            <ObjectStatus text="SQLite Active" state="Success" icon="sap-icon://database"/>
+                            
+                            <Label text="Service Endpoint:" class="sapUiSmallMarginTop sapUiTinyMarginBottom"/>
+                            <Link text="/leave/" href="http://localhost:4004/leave/" target="_blank"/>
+                            
+                            <Button 
+                                text="Test Connectivity" 
+                                icon="sap-icon://action" 
+                                type="Transparent"
+                                class="sapUiSmallMarginTop"
+                                press="onTestConnectivity"/>
+                        </VBox>
+                    </content>
+                </Panel>
+
+                <!-- Available Services Section -->
+                <Panel headerText="Available Services" class="sapUiResponsiveMargin">
+                    <content>
+                        <VBox class="sapUiSmallMargin">
+                            <Text text="OData V4 Entities Available:" class="sapUiTinyMarginBottom"/>
+                            <List items="{local>/serviceList}" showSeparators="Inner">
+                                <StandardListItem 
+                                    title="{local>name}" 
+                                    description="{local>description}"
+                                    icon="{local>icon}"
+                                    type="Navigation"
+                                    press="onServicePress">
+                                    <customData>
+                                        <core:CustomData key="route" value="{local>route}" />
+                                    </customData>
+                                </StandardListItem>
+                            </List>
+                        </VBox>
+                    </content>
+                </Panel>
+
+                <!-- Quick Tests Section -->
+                <Panel headerText="Quick Tests" class="sapUiResponsiveMargin">
+                    <content>
+                        <VBox class="sapUiSmallMargin">
+                            <HBox class="sapUiTinyMarginBottom">
+                                <Button 
+                                    text="Load Employees" 
+                                    icon="sap-icon://employee" 
+                                    type="Emphasized"
+                                    class="sapUiSmallMarginEnd"
+                                    press="onLoadEmployees"/>
+                                
+                                <Button 
+                                    text="Load Leave Requests" 
+                                    icon="sap-icon://request" 
+                                    type="Default"
+                                    class="sapUiSmallMarginEnd"
+                                    press="onLoadLeaveRequests"/>
+                                
+                                <Button 
+                                    text="Load Leave Types" 
+                                    icon="sap-icon://list" 
+                                    type="Default"
+                                    press="onLoadLeaveTypes"/>
+                            </HBox>
+                        </VBox>
+                    </content>
+                </Panel>
+
+                <!-- Statistics Panel -->
+                <Panel headerText="Quick Statistics" class="sapUiResponsiveMargin">
+                    <content>
+                        <VBox class="sapUiSmallMargin">
+                            
+                            <!-- Loading indicator -->
+                            <BusyIndicator visible="{local>/stats/isLoading}" class="sapUiSmallMarginBottom"/>
+                            
+                            <VBox visible="{= !${local>/stats/isLoading}}">
+                                <HBox justifyContent="SpaceBetween" class="sapUiTinyMarginBottom">
+                                    <Label text="Total Employees:"/>
+                                    <Text text="{local>/stats/employeeCount}" class="sapThemeHighlight-asColor"/>
+                                </HBox>
+                                
+                                <HBox justifyContent="SpaceBetween" class="sapUiTinyMarginBottom">
+                                    <Label text="Pending Requests:"/>
+                                    <Text text="{local>/stats/pendingRequests}" 
+                                          class="{= ${local>/stats/pendingRequests} > 0 ? 'sapThemeCritical-asColor' : 'sapThemePositive-asColor'}"/>
+                                </HBox>
+                                
+                                <HBox justifyContent="SpaceBetween" class="sapUiTinyMarginBottom">
+                                    <Label text="Approved Today:"/>
+                                    <Text text="{local>/stats/approvedToday}" class="sapThemePositive-asColor"/>
+                                </HBox>
+                            </VBox>
+                            
+                            <Button 
+                                text="Refresh Stats" 
+                                icon="sap-icon://refresh"
+                                type="Transparent"
+                                width="100%"
+                                class="sapUiSmallMarginTop"
+                                press="onRefreshStats"/>
+                        </VBox>
+                    </content>
+                </Panel>
+
+                <!-- Data Results Section -->
+                <Panel headerText="Test Results" 
+                       class="sapUiResponsiveMargin" 
+                       visible="{local>/testResults/visible}">
+                    <headerToolbar>
+                        <Toolbar>
+                            <Title text="{local>/testResults/title}"/>
+                            <ToolbarSpacer/>
+                            <Button icon="sap-icon://decline" 
+                                    type="Transparent" 
+                                    tooltip="Clear Results"
+                                    press="onClearResults"/>
+                        </Toolbar>
+                    </headerToolbar>
+                    <content>
+                        <VBox class="sapUiSmallMargin">
+                            <Text text="Total Records: {local>/testResults/totalCount}" 
+                                  class="sapUiTinyMarginBottom sapThemeHighlight-asColor"/>
+                            
+                            <List items="{local>/testResults/data}" showSeparators="Inner">
+                                <CustomListItem>
+                                    <content>
+                                        <VBox class="sapUiSmallMargin">
+                                            <Label text="Record {local>index}:" class="sapUiTinyMarginBottom"/>
+                                            <FormattedText htmlText="&lt;pre&gt;{local>data}&lt;/pre&gt;" 
+                                                          class="sapUiCodeFont"/>
+                                        </VBox>
+                                    </content>
+                                </CustomListItem>
+                            </List>
+                        </VBox>
+                    </content>
+                </Panel>
+
+                <!-- Getting Started Section (only visible when no test results) -->
+                <Panel headerText="Getting Started" 
+                       class="sapUiResponsiveMargin"
+                       visible="{= !${local>/testResults/visible}}">
+                    <content>
+                        <VBox class="sapUiSmallMargin">
+                            <Text text="Welcome to the Employee Leave Management System!" 
+                                  class="sapUiLargeMarginBottom"/>
+                            
+                            <Text text="Quick Start Guide:" class="sapUiTinyMarginBottom"/>
+                            
+                            <List>
+                                <StandardListItem 
+                                    title="1. Test Data Loading" 
+                                    description="Use the 'Quick Tests' buttons above to verify backend connectivity"
+                                    icon="sap-icon://play"/>
+                                    
+                                <StandardListItem 
+                                    title="2. Explore Services" 
+                                    description="Click on items in 'Available Services' to see what's coming next"
+                                    icon="sap-icon://explorer"/>
+                                    
+                                <StandardListItem 
+                                    title="3. Monitor Statistics" 
+                                    description="The statistics panel shows real-time data from your leave management system"
+                                    icon="sap-icon://bar-chart"/>
+                                    
+                                <StandardListItem 
+                                    title="4. Next Phase" 
+                                    description="Employee management interface will be added in the next development phase"
+                                    icon="sap-icon://future"/>
+                            </List>
+                            
+                            <MessageStrip 
+                                text="✅ System is ready for Phase 2 development - Employee CRUD interface!"
+                                type="Success"
+                                showIcon="true"
+                                class="sapUiMediumMarginTop"/>
+                        </VBox>
+                    </content>
+                </Panel>
+
+            </VBox>
+        </content>
+    </Page>
+
+</mvc:View>

@@ -3,10 +3,7 @@ sap.ui.define(["sap/ui/core/mvc/Controller"], function (Controller) {
 
   return Controller.extend("com.company.leavemanagement.controller.App", {
     onInit: function () {
-      // Initialize the app controller
-      this.getView().addStyleClass(
-        this.getOwnerComponent().getContentDensityClass()
-      );
+      console.log("📱 App controller initialized");
     },
   });
 });

@@ -1,0 +1,141 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:f="sap.ui.layout.form">
+
+    <Dialog 
+        title="{dialog>/title}"
+        contentWidth="600px"
+        contentHeight="500px"
+        draggable="true"
+        resizable="true">
+        
+        <content>
+            <VBox class="sapUiMediumMargin">
+                
+                <!-- Form -->
+                <f:SimpleForm
+                    editable="true"
+                    layout="ResponsiveGridLayout"
+                    labelSpanXL="4"
+                    labelSpanL="4"
+                    labelSpanM="4"
+                    labelSpanS="12"
+                    adjustLabelSpan="false"
+                    emptySpanXL="0"
+                    emptySpanL="0"
+                    emptySpanM="0"
+                    emptySpanS="0"
+                    columnsXL="2"
+                    columnsL="2"
+                    columnsM="1"
+                    singleContainerFullSize="false">
+                    
+                    <f:content>
+                        <!-- Employee ID -->
+                        <Label text="Employee ID *" required="true"/>
+                        <Input 
+                            value="{dialog>/employee/empId}"
+                            enabled="{= !${dialog>/editMode}}"
+                            placeholder="e.g. E001"
+                            maxLength="10"
+                            valueState="{= ${dialog>/employee/empId} ? 'None' : 'Error'}"
+                            valueStateText="Employee ID is required"/>
+                        
+                        <!-- Name -->
+                        <Label text="Full Name *" required="true"/>
+                        <Input 
+                            value="{dialog>/employee/name}"
+                            placeholder="Enter full name"
+                            maxLength="100"
+                            valueState="{= ${dialog>/employee/name} ? 'None' : 'Error'}"
+                            valueStateText="Name is required"/>
+                        
+                        <!-- Email -->
+                        <Label text="Email Address *" required="true"/>
+                        <Input 
+                            value="{dialog>/employee/email}"
+                            placeholder="name@company.com"
+                            type="Email"
+                            maxLength="100"
+                            valueState="{= ${dialog>/employee/email} ? 'None' : 'Error'}"
+                            valueStateText="Valid email is required"/>
+                        
+                        <!-- Manager -->
+                        <Label text="Manager"/>
+                        <ComboBox 
+                            selectedKey="{dialog>/employee/managerId}"
+                            placeholder="Select a manager (optional)"
+                            items="{/Managers}">
+                            <items>
+                                <core:Item key="{ID}" text="{name}"/>
+                            </items>
+                        </ComboBox>
+                        
+                        <!-- Leave Balance -->
+                        <Label text="Leave Balance"/>
+                        <StepInput 
+                            value="{dialog>/employee/leaveBalance}"
+                            min="0"
+                            max="50"
+                            step="1"
+                            displayValuePrecision="0"
+                            description="days"/>
+                    </f:content>
+                </f:SimpleForm>
+
+                <!-- Additional Information -->
+                <Panel headerText="Additional Information" class="sapUiMediumMarginTop" expandable="true" expanded="false">
+                    <content>
+                        <VBox class="sapUiSmallMargin">
+                            <Label text="Employee Details:" class="sapUiTinyMarginBottom"/>
+                            
+                            <HBox class="sapUiTinyMarginBottom" visible="{dialog>/editMode}">
+                                <Label text="Created:" class="sapUiSmallMarginEnd"/>
+                                <Text text="{path: 'dialog>/employee/createdAt', formatter: '.formatDate'}"/>
+                            </HBox>
+                            
+                            <HBox class="sapUiTinyMarginBottom" visible="{dialog>/editMode}">
+                                <Label text="Last Modified:" class="sapUiSmallMarginEnd"/>
+                                <Text text="{path: 'dialog>/employee/modifiedAt', formatter: '.formatDate'}"/>
+                            </HBox>
+                            
+                            <Text text="• Default leave balance for new employees is 20 days" 
+                                  class="sapUiContentLabelColor"/>
+                            <Text text="• Employee ID cannot be changed after creation" 
+                                  class="sapUiContentLabelColor"/>
+                            <Text text="• Manager assignment affects approval workflow" 
+                                  class="sapUiContentLabelColor"/>
+                        </VBox>
+                    </content>
+                </Panel>
+
+                <!-- Validation Messages -->
+                <MessageStrip 
+                    text="Please fill in all required fields marked with *"
+                    type="Warning"
+                    showIcon="true"
+                    class="sapUiMediumMarginTop"
+                    visible="{= !${dialog>/employee/empId} || !${dialog>/employee/name} || !${dialog>/employee/email}}"/>
+
+            </VBox>
+        </content>
+        
+        <beginButton>
+            <Button 
+                text="{= ${dialog>/editMode} ? 'Update' : 'Create'}"
+                type="Emphasized"
+                icon="{= ${dialog>/editMode} ? 'sap-icon://save' : 'sap-icon://add'}"
+                press="onSaveEmployee"
+                enabled="{= ${dialog>/employee/empId} &amp;&amp; ${dialog>/employee/name} &amp;&amp; ${dialog>/employee/email}}"/>
+        </beginButton>
+        
+        <endButton>
+            <Button 
+                text="Cancel" 
+                press="onCancelEmployee"/>
+        </endButton>
+        
+    </Dialog>
+
+</core:FragmentDefinition>

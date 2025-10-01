@@ -1,159 +1,188 @@
 {
-  "_version": "1.49.0",
-  "sap.app": {
-    "id": "com.company.leavemanagement",
-    "type": "application",
-    "i18n": "i18n/i18n.properties",
-    "applicationVersion": {
-      "version": "1.0.0"
-    },
-    "title": "{{appTitle}}",
-    "description": "{{appDescription}}",
-    "dataSources": {
-      "mainService": {
-        "uri": "/leave/",
-        "type": "OData",
-        "settings": {
-          "annotations": [],
-          "localUri": "localService/metadata.xml",
-          "odataVersion": "4.0"
+    "_version": "1.32.0",
+    "sap.app": {
+        "id": "com.company.leavemanagement",
+        "type": "application",
+        "i18n": "i18n/i18n.properties",
+        "applicationVersion": {
+            "version": "1.0.0"
+        },
+        "title": "Employee Leave Management",
+        "description": "Advanced Employee Leave Management System",
+        "dataSources": {
+            "mainService": {
+                "uri": "/leave/",
+                "type": "OData",
+                "settings": {
+                    "odataVersion": "4.0"
+                }
+            }
         }
-      }
+    },
+    "sap.ui": {
+        "technology": "UI5",
+        "icons": {
+            "icon": "",
+            "favIcon": "",
+            "phone": "",
+            "phone@2": "",
+            "tablet": "",
+            "tablet@2": ""
+        },
+        "deviceTypes": {
+            "desktop": true,
+            "tablet": true,
+            "phone": true
+        }
+    },
+    "sap.ui5": {
+        "flexEnabled": false,
+        "rootView": {
+            "viewName": "com.company.leavemanagement.view.App",
+            "type": "XML",
+            "async": true,
+            "id": "appView"
+        },
+        "dependencies": {
+            "minUI5Version": "1.96.0",
+            "libs": {
+                "sap.ui.core": {},
+                "sap.m": {},
+                "sap.f": {},
+                "sap.ui.layout": {},
+                "sap.ui.comp": {}
+            }
+        },
+        "models": {
+            "": {
+                "dataSource": "mainService",
+                "type": "sap.ui.model.odata.v4.ODataModel",
+                "settings": {
+                    "synchronizationMode": "None",
+                    "operationMode": "Server",
+                    "autoExpandSelect": true,
+                    "earlyRequests": true,
+                    "groupId": "$direct",
+                    "updateGroupId": "updateGroup"
+                }
+            }
+        },
+        "resources": {
+            "css": [
+                {
+                    "uri": "css/style.css"
+                }
+            ]
+        },
+        "routing": {
+            "config": {
+                "routerClass": "sap.m.routing.Router",
+                "viewType": "XML",
+                "viewPath": "com.company.leavemanagement.view",
+                "controllerPath": "com.company.leavemanagement.controller",
+                "controlId": "container-leaveManagementApp---appView--app",
+                "controlAggregation": "pages",
+                "clearControlAggregation": false,
+                "transition": "slide",
+                "bypassed": {
+                    "target": "notFound"
+                }
+            },
+            "routes": [
+                {
+                    "name": "home",
+                    "pattern": "",
+                    "target": "home"
+                },
+                {
+                    "name": "employeeList",
+                    "pattern": "employees",
+                    "target": "employeeList"
+                },
+                {
+                    "name": "employeeDetail",
+                    "pattern": "employees/{employeeId}",
+                    "target": "employeeDetail"
+                },
+                {
+                    "name": "leaveRequests",
+                    "pattern": "leave-requests",
+                    "target": "leaveRequests"
+                },
+                {
+                    "name": "leaveTypes",
+                    "pattern": "leave-types",
+                    "target": "leaveTypes"
+                },
+                {
+                    "name": "managers",
+                    "pattern": "managers",
+                    "target": "managers"
+                },
+                {
+                    "name": "approvals",
+                    "pattern": "approvals",
+                    "target": "approvals"
+                }
+            ],
+            "targets": {
+                "home": {
+                    "viewType": "XML",
+                    "viewId": "home",
+                    "viewName": "Home",
+                    "controlId": "container-leaveManagementApp---appView--app",
+                    "controlAggregation": "pages"
+                },
+                "employeeList": {
+                    "viewType": "XML",
+                    "viewId": "employeeList",
+                    "viewName": "EmployeeList",
+                    "controlId": "container-leaveManagementApp---appView--app",
+                    "controlAggregation": "pages"
+                },
+                "employeeDetail": {
+                    "viewType": "XML",
+                    "viewId": "employeeDetail",
+                    "viewName": "EmployeeDetail",
+                    "controlId": "container-leaveManagementApp---appView--app",
+                    "controlAggregation": "pages"
+                },
+                "leaveRequests": {
+                    "viewType": "XML",
+                    "viewId": "leaveRequests",
+                    "viewName": "LeaveRequests",
+                    "controlId": "container-leaveManagementApp---appView--app",
+                    "controlAggregation": "pages"
+                },
+                "leaveTypes": {
+                    "viewType": "XML",
+                    "viewId": "leaveTypes",
+                    "viewName": "LeaveTypes",
+                    "controlId": "container-leaveManagementApp---appView--app",
+                    "controlAggregation": "pages"
+                },
+                "managers": {
+                    "viewType": "XML",
+                    "viewId": "managers",
+                    "viewName": "Managers",
+                    "controlId": "container-leaveManagementApp---appView--app",
+                    "controlAggregation": "pages"
+                },
+                "approvals": {
+                    "viewType": "XML",
+                    "viewId": "approvals",
+                    "viewName": "Approvals",
+                    "controlId": "container-leaveManagementApp---appView--app",
+                    "controlAggregation": "pages"
+                },
+                "notFound": {
+                    "viewType": "XML",
+                    "viewId": "notFound",
+                    "viewName": "NotFound",
+                    "controlId": "container-leaveManagementApp---appView--app",
+                    "controlAggregation": "pages"
+                }
+            }
+        }
     }
-  },
-  "sap.ui": {
-    "technology": "UI5",
-    "icons": {
-      "icon": "",
-      "favIcon": "",
-      "phone": "",
-      "phone@2": "",
-      "tablet": "",
-      "tablet@2": ""
-    },
-    "deviceTypes": {
-      "desktop": true,
-      "tablet": true,
-      "phone": true
-    }
-  },
-  "sap.ui5": {
-    "rootView": {
-      "viewName": "com.company.leavemanagement.view.App",
-      "type": "XML",
-      "async": true,
-      "id": "App"
-    },
-    "flexEnabled": true,
-    "dependencies": {
-      "minUI5Version": "1.108.0",
-      "libs": {
-        "sap.m": {},
-        "sap.ui.core": {},
-        "sap.f": {},
-        "sap.suite.ui.commons": {}
-      }
-    },
-    "models": {
-      "i18n": {
-        "dataSource": "i18n",
-        "type": "sap.ui.model.resource.ResourceModel",
-        "settings": {
-          "bundleName": "com.company.leavemanagement.i18n.i18n"
-        }
-      },
-      "": {
-        "dataSource": "mainService",
-        "type": "sap.ui.model.odata.v4.ODataModel",
-        "settings": {
-          "synchronizationMode": "None",
-          "operationMode": "Server",
-          "autoExpandSelect": true,
-          "earlyRequests": true
-        }
-      }
-    },
-    "resources": {
-      "css": [
-        {
-          "uri": "css/style.css"
-        }
-      ]
-    },
-    "routing": {
-      "config": {
-        "routerClass": "sap.m.routing.Router",
-        "viewType": "XML",
-        "async": true,
-        "viewPath": "com.company.leavemanagement.view",
-        "controlId": "app",
-        "controlAggregation": "pages",
-        "clearControlAggregation": false
-      },
-      "routes": [
-        {
-          "name": "dashboard",
-          "pattern": "",
-          "target": ["dashboard"]
-        },
-        {
-          "name": "employees",
-          "pattern": "employees",
-          "target": ["employees"]
-        },
-        {
-          "name": "requests",
-          "pattern": "requests",
-          "target": ["requests"]
-        },
-        {
-          "name": "approvals",
-          "pattern": "approvals",
-          "target": ["approvals"]
-        },
-        {
-          "name": "leavetypes",
-          "pattern": "leavetypes",
-          "target": ["leavetypes"]
-        }
-      ],
-      "targets": {
-        "dashboard": {
-          "viewType": "XML",
-          "transition": "slide",
-          "clearControlAggregation": false,
-          "viewId": "dashboard",
-          "viewName": "Dashboard"
-        },
-        "employees": {
-          "viewType": "XML",
-          "transition": "slide",
-          "clearControlAggregation": false,
-          "viewId": "employees",
-          "viewName": "Employees"
-        },
-        "requests": {
-          "viewType": "XML",
-          "transition": "slide",
-          "clearControlAggregation": false,
-          "viewId": "requests",
-          "viewName": "LeaveRequests"
-        },
-        "approvals": {
-          "viewType": "XML",
-          "transition": "slide",
-          "clearControlAggregation": false,
-          "viewId": "approvals",
-          "viewName": "Approvals"
-        },
-        "leavetypes": {
-          "viewType": "XML",
-          "transition": "slide",
-          "clearControlAggregation": false,
-          "viewId": "leavetypes",
-          "viewName": "LeaveTypes"
-        }
-      }
-    }
-  }
 }

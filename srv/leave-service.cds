@@ -1,5 +1,6 @@
 using {leave as db} from '../db/schema';
 
+@path: '/leave'
 service LeaveService {
     entity Employees     as projection on db.Employee;
     entity Managers      as projection on db.Manager;

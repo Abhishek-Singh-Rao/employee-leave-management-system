@@ -1,16 +1,16 @@
-empId,name,email,leaveBalance
-E001,John Doe,john.doe@example.com,15
-E002,Jane Smith,jane.smith@example.com,20
-E003,David Johnson,david.johnson@example.com,8
-E004,Emily Davis,emily.davis@example.com,25
-E005,Michael Brown,michael.brown@example.com,5
-E006,Sophia Wilson,sophia.wilson@example.com,30
-E007,James Taylor,james.taylor@example.com,18
-E008,Olivia Martin,olivia.martin@example.com,22
-E009,Liam Thompson,liam.thompson@example.com,12
-E010,Ava Anderson,ava.anderson@example.com,28
-E011,Noah White,noah.white@example.com,6
-E012,Isabella Lewis,isabella.lewis@example.com,14
-E013,Lucas Hall,lucas.hall@example.com,17
-E014,Mia Young,mia.young@example.com,19
-E015,Ethan King,ethan.king@example.com,9
+empId,name,email,managerId,leaveBalance
+E001,John Doe,john.doe@example.com,a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d,15
+E002,Jane Smith,jane.smith@example.com,a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d,20
+E003,David Johnson,david.johnson@example.com,b2c3d4e5-f6a7-4b5c-9d0e-1f2a3b4c5d6e,8
+E004,Emily Davis,emily.davis@example.com,c3d4e5f6-a7b8-4c5d-0e1f-2a3b4c5d6e7f,25
+E005,Michael Brown,michael.brown@example.com,a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d,5
+E006,Sophia Wilson,sophia.wilson@example.com,b2c3d4e5-f6a7-4b5c-9d0e-1f2a3b4c5d6e,30
+E007,James Taylor,james.taylor@example.com,c3d4e5f6-a7b8-4c5d-0e1f-2a3b4c5d6e7f,18
+E008,Olivia Martin,olivia.martin@example.com,a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d,22
+E009,Liam Thompson,liam.thompson@example.com,b2c3d4e5-f6a7-4b5c-9d0e-1f2a3b4c5d6e,12
+E010,Ava Anderson,ava.anderson@example.com,c3d4e5f6-a7b8-4c5d-0e1f-2a3b4c5d6e7f,28
+E011,Noah White,noah.white@example.com,a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d,6
+E012,Isabella Lewis,isabella.lewis@example.com,b2c3d4e5-f6a7-4b5c-9d0e-1f2a3b4c5d6e,14
+E013,Lucas Hall,lucas.hall@example.com,c3d4e5f6-a7b8-4c5d-0e1f-2a3b4c5d6e7f,17
+E014,Mia Young,mia.young@example.com,a1b2c3d4-e5f6-4a5b-8c9d-0e1f2a3b4c5d,19
+E015,Ethan King,ethan.king@example.com,b2c3d4e5-f6a7-4b5c-9d0e-1f2a3b4c5d6e,9

@@ -21,6 +21,12 @@
           "url": "leave.db"
         }
       }
+    },
+    "folders": {
+      "app": "app/"
+    },
+    "server": {
+      "port": 4004
     }
   }
 }
