@@ -43,3 +43,57 @@
     border-radius: 8px;
     margin: 1rem 0;
 }
+
+/* Responsive Table Styling - Compact Version */
+.sapMListTbl {
+    table-layout: fixed !important;
+}
+
+.sapMListTblCell {
+    padding: 0.25rem 0.5rem !important;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Reduce header padding */
+.sapMListTblHeaderCell {
+    padding: 0.25rem 0.5rem !important;
+}
+
+/* Compact table rows */
+.sapMListTblRow {
+    height: 2.5rem !important;
+}
+
+/* Remove extra margins from table content */
+.sapMTableContentMargin {
+    margin: 0 !important;
+}
+
+/* Better ObjectIdentifier spacing */
+.sapMObjectIdentifier {
+    padding: 0 !important;
+}
+
+/* Compact buttons */
+.sapMBtn {
+    margin: 0 0.125rem !important;
+}
+
+/* Ensure the page container doesn't add extra padding */
+.sapUiBody, .sapMPage {
+    padding: 0 !important;
+}
+
+.sapUiContentPadding {
+    padding: 0.5rem !important;
+}
+
+/* Responsive margins */
+.sapUiResponsiveMargin {
+    margin: 0.5rem !important;
+}
+
+.sapUiMediumMarginBottom {
+    margin-bottom: 0.5rem !important;
+}

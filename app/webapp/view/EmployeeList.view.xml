@@ -92,25 +92,25 @@
                     </headerToolbar>
 
                     <columns>
-                        <Column width="10rem">
+                        <Column width="6rem">
                             <Text text="Employee ID"/>
                         </Column>
-                        <Column width="15rem">
+                        <Column width="8rem">
                             <Text text="Name"/>
                         </Column>
-                        <Column width="20rem">
+                        <Column width="13rem">
                             <Text text="Email"/>
                         </Column>
-                        <Column width="12rem">
+                        <Column width="8rem">
                             <Text text="Manager"/>
                         </Column>
-                        <Column width="10rem" hAlign="Center">
+                        <Column width="7rem" hAlign="Center">
                             <Text text="Leave Balance"/>
                         </Column>
                         <Column width="12rem" hAlign="Center">
                             <Text text="Last Modified"/>
                         </Column>
-                        <Column width="10rem" hAlign="Center">
+                        <Column width="5rem" hAlign="Center">
                             <Text text="Actions"/>
                         </Column>
                     </columns>

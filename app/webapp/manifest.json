@@ -123,6 +123,11 @@
                     "name": "approvals",
                     "pattern": "approvals",
                     "target": "approvals"
+                },
+                {
+                    "name": "leaveRequestForm",
+                    "pattern": "leave-request/new",
+                    "target": "leaveRequestForm"
                 }
             ],
             "targets": {
@@ -179,6 +184,13 @@
                     "viewType": "XML",
                     "viewId": "notFound",
                     "viewName": "NotFound",
+                    "controlId": "container-leaveManagementApp---appView--app",
+                    "controlAggregation": "pages"
+                },
+                "leaveRequestForm": {
+                    "viewType": "XML",
+                    "viewId": "leaveRequestForm",
+                    "viewName": "LeaveRequestForm",
                     "controlId": "container-leaveManagementApp---appView--app",
                     "controlAggregation": "pages"
                 }

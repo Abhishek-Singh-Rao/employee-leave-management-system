@@ -51,7 +51,7 @@ sap.ui.define(
               description: "Submit and track leave applications",
               icon: "sap-icon://request",
               route: "leaveRequests",
-              available: false, // Will be implemented in Phase 3
+              available: true,
             },
             {
               name: "Leave Types",

@@ -5,36 +5,44 @@ module.exports = cds.service.impl(async function () {
 
   /** ----------- VALIDATE LEAVE REQUEST ----------- **/
   this.before("CREATE", "LeaveRequests", async (req) => {
-    const { employee_empId, leaveType_code, startDate, endDate } = req.data;
+    const { employeeId, leaveTypeCode, startDate, endDate } = req.data;
+
+    console.log("Backend received leave request data:", req.data);
 
     if (new Date(startDate) > new Date(endDate)) {
       return req.error(400, "Start date must be before end date");
     }
 
     const employee = await SELECT.one
-      .from(Employee)
-      .where({ empId: employee_empId });
-    if (!employee)
-      return req.error(404, `Employee ${employee_empId} not found`);
+      .from("leave.Employee")
+      .where({ empId: employeeId });
+    if (!employee) {
+      console.error(`Employee ${employeeId} not found`);
+      return req.error(404, `Employee ${employeeId} not found`);
+    }
 
     const leaveType = await SELECT.one
-      .from(LeaveType)
-      .where({ code: leaveType_code });
-    if (!leaveType)
-      return req.error(404, `Leave type ${leaveType_code} not found`);
+      .from("leave.LeaveType")
+      .where({ code: leaveTypeCode });
+    if (!leaveType) {
+      console.error(`Leave type ${leaveTypeCode} not found`);
+      return req.error(404, `Leave type ${leaveTypeCode} not found`);
+    }
 
     const days =
       (new Date(endDate) - new Date(startDate)) / (1000 * 60 * 60 * 24) + 1;
 
     if (days > leaveType.maxDays) {
-      req.error(
+      return req.error(
         400,
         `Cannot request more than ${leaveType.maxDays} days for ${leaveType.name}`
       );
     }
     if (days > employee.leaveBalance) {
-      req.error(400, "Not enough leave balance");
+      return req.error(400, "Not enough leave balance");
     }
+
+    console.log("Backend validation passed for leave request");
   });
 
   /** ----------- UPDATE BALANCE AFTER APPROVAL ----------- **/
@@ -55,7 +63,7 @@ module.exports = cds.service.impl(async function () {
 
         await UPDATE(Employee)
           .set({ leaveBalance: { "-=": days } })
-          .where({ empId: request.employee_empId });
+          .where({ empId: request.employeeId });
 
         await UPDATE(LeaveRequest)
           .set({ status: "APPROVED" })

@@ -1,0 +1,174 @@
+<mvc:View
+    controllerName="com.company.leavemanagement.controller.LeaveRequestForm"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:f="sap.ui.layout.form"
+    displayBlock="true">
+
+    <Page title="New Leave Request" showNavButton="true" navButtonPress="onNavBack">
+        <content>
+            <VBox class="sapUiContentPadding">
+                
+                <!-- Form Panel -->
+                <Panel headerText="Leave Request Details" class="sapUiResponsiveMargin">
+                    <content>
+                        <f:SimpleForm
+                            id="leaveRequestForm"
+                            editable="true"
+                            layout="ResponsiveGridLayout"
+                            labelSpanXL="4"
+                            labelSpanL="4"
+                            labelSpanM="12"
+                            labelSpanS="12"
+                            adjustLabelSpan="false"
+                            emptySpanXL="0"
+                            emptySpanL="0"
+                            emptySpanM="0"
+                            emptySpanS="0"
+                            columnsXL="2"
+                            columnsL="2"
+                            columnsM="1"
+                            singleContainerFullSize="false"
+                            class="sapUiSmallMargin">
+                            
+                            <f:content>
+                                <!-- Employee Selection -->
+                                <Label text="Employee" required="true"/>
+                                <ComboBox
+                                    id="employeeComboBox"
+                                    placeholder="Select Employee"
+                                    items="{/Employees}"
+                                    selectionChange="onEmployeeChange"
+                                    selectedKey="{form>/employee_empId}"
+                                    required="true">
+                                    <items>
+                                        <core:ListItem key="{empId}" text="{empId} - {name}" additionalText="{email}"/>
+                                    </items>
+                                </ComboBox>
+
+                                <!-- Leave Balance Display -->
+                                <Label text="Available Balance"/>
+                                <Text 
+                                    text="{= ${form>/leaveBalance} + ' days remaining'}"
+                                    class="{= ${form>/leaveBalance} &gt; 10 ? 'sapThemePositive-asColor' : ${form>/leaveBalance} &gt; 5 ? 'sapThemeCritical-asColor' : 'sapThemeNegative-asColor'}"/>
+
+                                <!-- Leave Type Selection -->
+                                <Label text="Leave Type" required="true"/>
+                                <ComboBox
+                                    id="leaveTypeComboBox"
+                                    placeholder="Select Leave Type"
+                                    items="{/LeaveTypes}"
+                                    selectionChange="onLeaveTypeChange"
+                                    selectedKey="{form>/leaveType_code}"
+                                    required="true">
+                                    <items>
+                                        <core:ListItem key="{code}" text="{name}" additionalText="{= 'Max: ' + ${maxDays} + ' days'}"/>
+                                    </items>
+                                </ComboBox>
+
+                                <!-- Max Days Info -->
+                                <Label text="Maximum Allowed"/>
+                                <ObjectNumber
+                                    number="{form>/maxDays}"
+                                    unit="days"
+                                    visible="{= ${form>/maxDays} > 0}"/>
+
+                                <!-- Start Date -->
+                                <Label text="Start Date" required="true"/>
+                                <DatePicker
+                                    id="startDatePicker"
+                                    placeholder="Select start date"
+                                    displayFormat="MMM dd, yyyy"
+                                    change="onDateChange"
+                                    required="true"/>
+
+                                <!-- End Date -->
+                                <Label text="End Date" required="true"/>
+                                <DatePicker
+                                    id="endDatePicker"
+                                    placeholder="Select end date"
+                                    displayFormat="MMM dd, yyyy"
+                                    change="onDateChange"
+                                    required="true"/>
+
+                                <!-- Days Calculation -->
+                                <Label text="Total Days"/>
+                                <ObjectNumber
+                                    number="{form>/days}"
+                                    unit="days"
+                                    emphasized="true"
+                                    state="{= ${form>/days} &lt;= ${form>/leaveBalance} ? 'Success' : 'Error'}"/>
+
+                                <!-- Validation Messages -->
+                                <Label text=""/>
+                                <VBox>
+                                    <MessageStrip
+                                        text="Insufficient leave balance!"
+                                        type="Error"
+                                        showIcon="true"
+                                        visible="{= ${form>/days} &gt; ${form>/leaveBalance} &amp;&amp; ${form>/days} &gt; 0}"/>
+                                    <MessageStrip
+                                        text="Exceeds maximum allowed days for this leave type!"
+                                        type="Warning"
+                                        showIcon="true"
+                                        visible="{= ${form>/days} &gt; ${form>/maxDays} &amp;&amp; ${form>/maxDays} &gt; 0}"/>
+                                </VBox>
+
+                                <!-- Reason -->
+                                <Label text="Reason" required="true"/>
+                                <TextArea
+                                    id="reasonTextArea"
+                                    value="{form>/reason}"
+                                    rows="4"
+                                    maxLength="500"
+                                    placeholder="Please provide a reason for your leave request..."
+                                    required="true"
+                                    showExceededText="true"/>
+                            </f:content>
+                        </f:SimpleForm>
+                    </content>
+                </Panel>
+
+                <!-- Action Buttons -->
+                <Toolbar class="sapUiResponsiveMargin">
+                    <ToolbarSpacer/>
+                    <Button
+                        text="Cancel"
+                        press="onCancel"
+                        type="Transparent"/>
+                    <Button
+                        text="Submit Request"
+                        press="onSubmit"
+                        type="Emphasized"
+                        icon="sap-icon://paper-plane"/>
+                </Toolbar>
+
+                <!-- Information Panel -->
+                <Panel headerText="Guidelines" class="sapUiResponsiveMargin">
+                    <content>
+                        <VBox class="sapUiSmallMargin">
+                            <Text text="Please note the following:" class="sapUiTinyMarginBottom"/>
+                            <List>
+                                <StandardListItem
+                                    title="Submit in Advance"
+                                    description="Leave requests should be submitted at least 3 days in advance"
+                                    icon="sap-icon://calendar"/>
+                                <StandardListItem
+                                    title="Manager Approval"
+                                    description="All requests require manager approval before leave can be taken"
+                                    icon="sap-icon://approvals"/>
+                                <StandardListItem
+                                    title="Balance Check"
+                                    description="Ensure you have sufficient leave balance before submitting"
+                                    icon="sap-icon://warning"/>
+                            </List>
+                        </VBox>
+                    </content>
+                </Panel>
+
+            </VBox>
+        </content>
+    </Page>
+
+</mvc:View>

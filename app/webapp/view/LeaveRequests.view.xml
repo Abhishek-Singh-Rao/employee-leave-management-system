@@ -1,0 +1,215 @@
+<mvc:View
+    controllerName="com.company.leavemanagement.controller.LeaveRequests"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    displayBlock="true">
+
+    <Page title="Leave Request Management" showNavButton="true" navButtonPress="onNavBack">
+        <content>
+            <VBox class="sapUiContentPadding">
+                
+                <!-- Header toolbar with actions -->
+                <Toolbar class="sapUiMediumMarginBottom">
+                    <Title text="Leave Requests" level="H2"/>
+                    <ToolbarSpacer/>
+                    <Button 
+                        text="New Leave Request" 
+                        icon="sap-icon://add" 
+                        type="Emphasized"
+                        press="onNewLeaveRequest"/>
+                    <Button 
+                        text="Refresh" 
+                        icon="sap-icon://refresh" 
+                        type="Transparent"
+                        press="onRefresh"/>
+                </Toolbar>
+
+                <!-- Filter panel -->
+                <Panel headerText="Search &amp; Filter" expandable="true" expanded="true" class="sapUiResponsiveMargin">
+                    <content>
+                        <VBox class="sapUiSmallMargin">
+                            <HBox class="sapUiTinyMarginBottom">
+                                <SearchField 
+                                    id="leaveRequestSearchField"
+                                    placeholder="Search by employee name or ID..."
+                                    width="300px"
+                                    class="sapUiSmallMarginEnd"
+                                    search="onSearch"
+                                    liveChange="onSearchLiveChange"/>
+                                
+                                <ComboBox 
+                                    id="leaveRequestStatusFilter"
+                                    placeholder="Filter by Status"
+                                    width="180px"
+                                    class="sapUiSmallMarginEnd"
+                                    selectionChange="onStatusFilter">
+                                    <items>
+                                        <core:Item key="" text="All Status"/>
+                                        <core:Item key="Pending" text="Pending"/>
+                                        <core:Item key="Approved" text="Approved"/>
+                                        <core:Item key="Rejected" text="Rejected"/>
+                                    </items>
+                                </ComboBox>
+                                
+                                <ComboBox 
+                                    id="leaveRequestTypeFilter"
+                                    placeholder="Filter by Leave Type"
+                                    width="180px"
+                                    items="{/LeaveTypes}"
+                                    class="sapUiSmallMarginEnd"
+                                    selectionChange="onLeaveTypeFilter">
+                                    <items>
+                                        <core:Item key="{code}" text="{name}"/>
+                                    </items>
+                                </ComboBox>
+                                
+                                <Button 
+                                    text="Clear Filters" 
+                                    type="Transparent"
+                                    press="onClearFilters"/>
+                            </HBox>
+                        </VBox>
+                    </content>
+                </Panel>
+
+                <!-- Leave Requests table -->
+                <Table 
+                    id="leaveRequestsTable"
+                    inset="false"
+                    items="{
+                        path: '/LeaveRequests',
+                        parameters: {
+                            $expand: 'employee,leaveType'
+                        },
+                        sorter: {
+                            path: 'createdAt',
+                            descending: true
+                        }
+                    }"
+                    mode="SingleSelect"
+                    growing="true"
+                    growingThreshold="20"
+                    fixedLayout="false"
+                    width="100%">
+                    
+                    <headerToolbar>
+                        <Toolbar>
+                            <Title text="All Leave Requests" level="H3"/>
+                            <ToolbarSpacer/>
+                            <Text text="Total: {local>/totalRequests}"/>
+                        </Toolbar>
+                    </headerToolbar>
+
+                    <columns>
+                        <Column 
+                            width="6%"
+                            minScreenWidth="Tablet"
+                            demandPopin="true">
+                            <Text text="Emp ID"/>
+                        </Column>
+                        <Column width="12%">
+                            <Text text="Employee Name"/>
+                        </Column>
+                        <Column 
+                            width="10%"
+                            minScreenWidth="Desktop"
+                            demandPopin="true">
+                            <Text text="Leave Type"/>
+                        </Column>
+                        <Column width="9%">
+                            <Text text="Start Date"/>
+                        </Column>
+                        <Column width="9%">
+                            <Text text="End Date"/>
+                        </Column>
+                        <Column 
+                            width="6%" 
+                            hAlign="Center"
+                            minScreenWidth="Tablet"
+                            demandPopin="true">
+                            <Text text="Days"/>
+                        </Column>
+                        <Column width="8%" hAlign="Center">
+                            <Text text="Status"/>
+                        </Column>
+                        <Column 
+                            width="14%"
+                            minScreenWidth="Desktop"
+                            demandPopin="true">
+                            <Text text="Requested On"/>
+                        </Column>
+                        <Column width="8%" hAlign="Center">
+                            <Text text="Actions"/>
+                        </Column>
+                    </columns>
+
+                    <items>
+                        <ColumnListItem press="onRequestPress">
+                            <cells>
+                                <Text text="{employee/empId}"/>
+                                
+                                <ObjectIdentifier title="{employee/name}"/>
+                                
+                                <Text text="{leaveType/name}"/>
+                                
+                                <Text text="{path: 'startDate', formatter: '.formatDate'}"/>
+                                
+                                <Text text="{path: 'endDate', formatter: '.formatDate'}"/>
+                                
+                                <ObjectNumber 
+                                    number="{days}" 
+                                    unit="days"/>
+                                
+                                <ObjectStatus 
+                                    text="{status}"
+                                    state="{= ${status} === 'Approved' ? 'Success' : ${status} === 'Rejected' ? 'Error' : 'Warning'}"/>
+                                
+                                <Text text="{path: 'createdAt', formatter: '.formatDateTime'}"/>
+                                
+                                <HBox justifyContent="Center">
+                                    <Button 
+                                        icon="sap-icon://display" 
+                                        type="Transparent"
+                                        tooltip="View Details"
+                                        press="onViewRequest"/>
+                                    <Button 
+                                        icon="sap-icon://delete" 
+                                        type="Transparent"
+                                        tooltip="Cancel Request"
+                                        visible="{= ${status} === 'Pending'}"
+                                        press="onCancelRequest"/>
+                                </HBox>
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+
+                <!-- Statistics panel -->
+                <Panel headerText="Request Statistics" class="sapUiResponsiveMargin">
+                    <content>
+                        <HBox class="sapUiSmallMargin" justifyContent="SpaceAround">
+                            <VBox alignItems="Center">
+                                <Text text="{local>/stats/totalRequests}" class="sapThemeHighlight-asColor sapUiLargeText"/>
+                                <Label text="Total Requests"/>
+                            </VBox>
+                            <VBox alignItems="Center">
+                                <Text text="{local>/stats/pendingCount}" class="sapThemeCritical-asColor sapUiLargeText"/>
+                                <Label text="Pending"/>
+                            </VBox>
+                            <VBox alignItems="Center">
+                                <Text text="{local>/stats/approvedCount}" class="sapThemePositive-asColor sapUiLargeText"/>
+                                <Label text="Approved"/>
+                            </VBox>
+                            <VBox alignItems="Center">
+                                <Text text="{local>/stats/rejectedCount}" class="sapThemeNegative-asColor sapUiLargeText"/>
+                                <Label text="Rejected"/>
+                            </VBox>
+                        </HBox>
+                    </content>
+                </Panel>
+            </VBox>
+        </content>
+    </Page>
+
+</mvc:View>
