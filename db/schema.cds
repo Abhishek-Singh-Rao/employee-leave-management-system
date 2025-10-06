@@ -41,11 +41,13 @@ entity LeaveRequest : cuid, managed {
 }
 
 entity Approval : cuid, managed {
-    employeeId  : String(10); // Which employee's request
-    managerName : String(100); // Which manager approved
-    decision    : String(20); // Approved/Rejected
+    request_ID  : UUID;
+    request     : Association to LeaveRequest
+                      on request.ID = request_ID;
+    employeeId  : String(10);
+    managerName : String(100);
+    decision    : String(20);
     comments    : String(500);
-    // Optional associations for convenience
     employee    : Association to Employee
                       on employee.empId = employeeId;
     manager     : Association to Manager

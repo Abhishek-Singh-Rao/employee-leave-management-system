@@ -3,7 +3,7 @@ const cds = require("@sap/cds");
 module.exports = cds.service.impl(async function () {
   const { Employee, LeaveRequest, LeaveType, Approval } = this.entities;
 
-  /** ----------- VALIDATE LEAVE REQUEST ----------- **/
+  /** ----------- VALIDATE LEAVE REQUEST (Phase 3 - Keep Working) ----------- **/
   this.before("CREATE", "LeaveRequests", async (req) => {
     const { employeeId, leaveTypeCode, startDate, endDate } = req.data;
 
@@ -45,34 +45,154 @@ module.exports = cds.service.impl(async function () {
     console.log("Backend validation passed for leave request");
   });
 
-  /** ----------- UPDATE BALANCE AFTER APPROVAL ----------- **/
-  this.after("CREATE", "Approvals", async (data) => {
-    const { decision, request_ID } = data;
+  /** ----------- VALIDATE APPROVAL CREATION (Phase 4 - NEW) ----------- **/
+  this.before("CREATE", "Approvals", async (req) => {
+    const { request_ID, decision, managerName, comments } = req.data;
 
-    if (!request_ID) return;
+    console.log("=== Phase 4: Backend received approval data ===", req.data);
 
-    if (decision === "APPROVED") {
+    // Validate required fields
+    if (!request_ID) {
+      console.error("Missing request_ID");
+      return req.error(400, "Leave request ID is required");
+    }
+
+    if (!decision || (decision !== "Approved" && decision !== "Rejected")) {
+      console.error("Invalid decision:", decision);
+      return req.error(400, "Decision must be Approved or Rejected");
+    }
+
+    if (!managerName) {
+      console.error("Missing managerName");
+      return req.error(400, "Manager name is required");
+    }
+
+    // Validate manager exists
+    const manager = await SELECT.one
+      .from("leave.Manager")
+      .where({ name: managerName });
+    if (!manager) {
+      console.error(`Manager ${managerName} not found`);
+      return req.error(404, `Manager ${managerName} not found`);
+    }
+
+    // Check if leave request exists
+    const leaveRequest = await SELECT.one
+      .from("leave.LeaveRequest")
+      .where({ ID: request_ID });
+
+    if (!leaveRequest) {
+      console.error(`Leave request ${request_ID} not found`);
+      return req.error(404, "Leave request not found");
+    }
+
+    console.log("Found leave request:", leaveRequest);
+
+    // Check if request is already processed
+    if (leaveRequest.status !== "Pending") {
+      console.error(`Request already ${leaveRequest.status}`);
+      return req.error(
+        400,
+        `This request has already been ${leaveRequest.status.toLowerCase()}`
+      );
+    }
+
+    // Require comments for rejection
+    if (decision === "Rejected" && (!comments || comments.trim() === "")) {
+      console.error("Missing comments for rejection");
+      return req.error(400, "Comments are required when rejecting a request");
+    }
+
+    // Set employeeId from the leave request for the approval record
+    req.data.employeeId = leaveRequest.employeeId;
+
+    console.log("=== Phase 4: Approval validation passed ===");
+  });
+
+  /** ----------- UPDATE BALANCE AND STATUS AFTER APPROVAL (Phase 4 - NEW) ----------- **/
+  this.after("CREATE", "Approvals", async (data, req) => {
+    const { decision, request_ID, comments, managerName } = data;
+
+    console.log("=== Phase 4: Processing approval after creation ===");
+    console.log("Approval data:", { decision, request_ID, managerName });
+
+    if (!request_ID) {
+      console.error("No request_ID found in approval data");
+      return;
+    }
+
+    try {
+      // Get the leave request with employee details
       const request = await SELECT.one
-        .from(LeaveRequest)
+        .from("leave.LeaveRequest")
         .where({ ID: request_ID });
-      if (request) {
+
+      if (!request) {
+        console.error(
+          `Leave request ${request_ID} not found during processing`
+        );
+        return;
+      }
+
+      console.log("Processing leave request:", {
+        ID: request.ID,
+        employeeId: request.employeeId,
+        days: request.days,
+        status: request.status,
+      });
+
+      if (decision === "Approved") {
+        console.log(`=== APPROVING REQUEST ${request_ID} ===`);
+
+        // Calculate days
         const days =
           (new Date(request.endDate) - new Date(request.startDate)) /
             (1000 * 60 * 60 * 24) +
           1;
 
-        await UPDATE(Employee)
+        console.log(
+          `Deducting ${days} days from employee ${request.employeeId}`
+        );
+
+        // Get current employee balance
+        const employee = await SELECT.one
+          .from("leave.Employee")
+          .where({ empId: request.employeeId });
+
+        console.log(`Current balance: ${employee.leaveBalance} days`);
+
+        // Update employee balance
+        await UPDATE("leave.Employee")
           .set({ leaveBalance: { "-=": days } })
           .where({ empId: request.employeeId });
 
-        await UPDATE(LeaveRequest)
-          .set({ status: "APPROVED" })
+        console.log(`New balance: ${employee.leaveBalance - days} days`);
+
+        // Update leave request status
+        await UPDATE("leave.LeaveRequest")
+          .set({ status: "Approved" })
           .where({ ID: request_ID });
+
+        console.log(`✅ Leave request ${request_ID} APPROVED, balance updated`);
+      } else if (decision === "Rejected") {
+        console.log(`=== REJECTING REQUEST ${request_ID} ===`);
+
+        // Update leave request status only (no balance change)
+        await UPDATE("leave.LeaveRequest")
+          .set({ status: "Rejected" })
+          .where({ ID: request_ID });
+
+        console.log(`❌ Leave request ${request_ID} REJECTED`);
+        console.log(`Reason: ${comments || "No comments provided"}`);
       }
-    } else if (decision === "REJECTED") {
-      await UPDATE(LeaveRequest)
-        .set({ status: "REJECTED" })
-        .where({ ID: request_ID });
+
+      console.log("=== Phase 4: Approval processing complete ===");
+    } catch (error) {
+      console.error("=== ERROR during approval processing ===");
+      console.error("Error:", error);
+      console.error("Error message:", error.message);
+      console.error("Error stack:", error.stack);
+      throw error;
     }
   });
 });

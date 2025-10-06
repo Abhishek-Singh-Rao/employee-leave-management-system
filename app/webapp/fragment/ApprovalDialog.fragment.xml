@@ -1,0 +1,90 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:f="sap.ui.layout.form">
+
+    <Dialog
+        id="approvalDialog"
+        title="{dialog>/title}"
+        contentWidth="500px"
+        afterClose="onDialogClose">
+        
+        <content>
+            <VBox class="sapUiSmallMargin">
+                
+                <!-- Request Summary -->
+                <Panel headerText="Request Summary" class="sapUiNoMargin">
+                    <content>
+                        <VBox class="sapUiTinyMargin">
+                            <HBox justifyContent="SpaceBetween" class="sapUiTinyMarginBottom">
+                                <Label text="Employee:"/>
+                                <Text text="{dialog>/employeeName}"/>
+                            </HBox>
+                            <HBox justifyContent="SpaceBetween" class="sapUiTinyMarginBottom">
+                                <Label text="Leave Type:"/>
+                                <Text text="{dialog>/leaveType}"/>
+                            </HBox>
+                            <HBox justifyContent="SpaceBetween" class="sapUiTinyMarginBottom">
+                                <Label text="Period:"/>
+                                <Text text="{dialog>/period}"/>
+                            </HBox>
+                            <HBox justifyContent="SpaceBetween" class="sapUiTinyMarginBottom">
+                                <Label text="Days:"/>
+                                <ObjectNumber number="{dialog>/days}" unit="days" emphasized="true"/>
+                            </HBox>
+                            <HBox justifyContent="SpaceBetween" class="sapUiTinyMarginBottom">
+                                <Label text="Current Balance:"/>
+                                <ObjectNumber 
+                                    number="{dialog>/balance}" 
+                                    unit="days"
+                                    state="{= ${dialog>/balance} &gt; ${dialog>/days} ? 'Success' : 'Error'}"/>
+                            </HBox>
+                        </VBox>
+                    </content>
+                </Panel>
+
+                <!-- Decision Info -->
+                <MessageStrip
+                    text="{dialog>/message}"
+                    type="{dialog>/messageType}"
+                    showIcon="true"
+                    class="sapUiMediumMarginTop"/>
+
+                <!-- Comments/Reason Input -->
+                <VBox class="sapUiMediumMarginTop">
+                    <Label 
+                        text="{= ${dialog>/decision} === 'REJECTED' ? 'Rejection Reason (Required):' : 'Comments (Optional):'}" 
+                        required="{= ${dialog>/decision} === 'REJECTED'}"
+                        class="sapUiTinyMarginBottom"/>
+                    <TextArea
+                        id="commentsTextArea"
+                        value="{dialog>/comments}"
+                        rows="4"
+                        maxLength="500"
+                        placeholder="{= ${dialog>/decision} === 'REJECTED' ? 'Please provide a reason for rejection...' : 'Add any comments or notes...'}"
+                        required="{= ${dialog>/decision} === 'REJECTED'}"
+                        showExceededText="true"
+                        width="100%"/>
+                </VBox>
+
+            </VBox>
+        </content>
+
+        <beginButton>
+            <Button
+                text="{dialog>/confirmText}"
+                type="{dialog>/confirmType}"
+                icon="{dialog>/confirmIcon}"
+                press="onDialogConfirm"/>
+        </beginButton>
+
+        <endButton>
+            <Button
+                text="Cancel"
+                type="Transparent"
+                press="onDialogCancel"/>
+        </endButton>
+
+    </Dialog>
+
+</core:FragmentDefinition>

@@ -72,7 +72,7 @@ sap.ui.define(
               description: "Decision history and workflow",
               icon: "sap-icon://approve",
               route: "approvals",
-              available: false, // Will be implemented in Phase 4
+              available: true, // Will be implemented in Phase 4
             },
           ],
           stats: {

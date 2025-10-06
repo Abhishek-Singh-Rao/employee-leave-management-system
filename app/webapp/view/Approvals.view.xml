@@ -1,0 +1,227 @@
+<mvc:View
+    controllerName="com.company.leavemanagement.controller.Approvals"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    displayBlock="true">
+
+    <Page title="Manager Approval Dashboard" showNavButton="true" navButtonPress="onNavBack">
+        <content>
+            <VBox class="sapUiContentPadding">
+                
+                <!-- Header toolbar with actions -->
+                <Toolbar class="sapUiMediumMarginBottom">
+                    <Title text="Pending Leave Requests" level="H2"/>
+                    <ToolbarSpacer/>
+                    <Button 
+                        text="Refresh" 
+                        icon="sap-icon://refresh" 
+                        type="Transparent"
+                        press="onRefresh"/>
+                </Toolbar>
+
+                <!-- Manager Selection Panel -->
+                <Panel headerText="Manager Details" expandable="true" expanded="true" class="sapUiResponsiveMargin">
+                    <content>
+                        <VBox class="sapUiSmallMargin">
+                            <Label text="Select Manager" required="true"/>
+                            <ComboBox
+                                id="managerComboBox"
+                                placeholder="Select your manager profile"
+                                items="{/Managers}"
+                                selectionChange="onManagerChange"
+                                selectedKey="{local>/selectedManagerName}"
+                                required="true"
+                                width="100%">
+                                <items>
+                                    <core:ListItem key="{name}" text="{name}" additionalText="{email}"/>
+                                </items>
+                            </ComboBox>
+                            <MessageStrip
+                                text="Please select your manager profile to view pending requests"
+                                type="Information"
+                                showIcon="true"
+                                class="sapUiSmallMarginTop"
+                                visible="{= !${local>/selectedManagerName}}"/>
+                        </VBox>
+                    </content>
+                </Panel>
+
+                <!-- Statistics panel -->
+                <Panel headerText="Approval Statistics" class="sapUiResponsiveMargin">
+                    <content>
+                        <HBox class="sapUiSmallMargin" justifyContent="SpaceAround">
+                            <VBox alignItems="Center">
+                                <Text text="{local>/stats/pendingCount}" class="sapThemeCritical-asColor sapUiLargeText"/>
+                                <Label text="Pending Requests"/>
+                            </VBox>
+                            <VBox alignItems="Center">
+                                <Text text="{local>/stats/approvedToday}" class="sapThemePositive-asColor sapUiLargeText"/>
+                                <Label text="Approved Today"/>
+                            </VBox>
+                            <VBox alignItems="Center">
+                                <Text text="{local>/stats/rejectedToday}" class="sapThemeNegative-asColor sapUiLargeText"/>
+                                <Label text="Rejected Today"/>
+                            </VBox>
+                            <VBox alignItems="Center">
+                                <Text text="{local>/stats/totalProcessed}" class="sapThemeHighlight-asColor sapUiLargeText"/>
+                                <Label text="Total Processed"/>
+                            </VBox>
+                        </HBox>
+                    </content>
+                </Panel>
+
+                <!-- Pending Requests Table -->
+                <Table 
+                    id="pendingRequestsTable"
+                    inset="false"
+                    items="{
+                        path: '/LeaveRequests',
+                        parameters: {
+                            $expand: 'employee,leaveType'
+                        },
+                        filters: [
+                            {
+                                path: 'status',
+                                operator: 'EQ',
+                                value1: 'Pending'
+                            }
+                        ],
+                        sorter: {
+                            path: 'createdAt',
+                            descending: false
+                        }
+                    }"
+                    mode="SingleSelect"
+                    growing="true"
+                    growingThreshold="20"
+                    fixedLayout="false"
+                    width="100%"
+                    visible="{= ${local>/selectedManagerName} !== ''}">
+                    
+                    <headerToolbar>
+                        <Toolbar>
+                            <Title text="Requests Awaiting Your Approval" level="H3"/>
+                            <ToolbarSpacer/>
+                            <Text text="Count: {local>/stats/pendingCount}"/>
+                        </Toolbar>
+                    </headerToolbar>
+
+                    <columns>
+                        <Column width="8%">
+                            <Text text="Emp ID"/>
+                        </Column>
+                        <Column width="15%">
+                            <Text text="Employee Name"/>
+                        </Column>
+                        <Column width="12%" minScreenWidth="Tablet" demandPopin="true">
+                            <Text text="Leave Type"/>
+                        </Column>
+                        <Column width="10%">
+                            <Text text="Start Date"/>
+                        </Column>
+                        <Column width="10%">
+                            <Text text="End Date"/>
+                        </Column>
+                        <Column width="7%" hAlign="Center">
+                            <Text text="Days"/>
+                        </Column>
+                        <Column width="8%" hAlign="Center" minScreenWidth="Tablet" demandPopin="true">
+                            <Text text="Balance"/>
+                        </Column>
+                        <Column width="15%" minScreenWidth="Desktop" demandPopin="true">
+                            <Text text="Requested On"/>
+                        </Column>
+                        <Column width="15%" hAlign="Center">
+                            <Text text="Actions"/>
+                        </Column>
+                    </columns>
+
+                    <items>
+                        <ColumnListItem>
+                            <cells>
+                                <Text text="{employee/empId}"/>
+                                
+                                <VBox>
+                                    <ObjectIdentifier title="{employee/name}"/>
+                                    <Text text="{employee/email}" class="sapUiTinyText"/>
+                                </VBox>
+                                
+                                <ObjectStatus 
+                                    text="{leaveType/name}"
+                                    icon="sap-icon://business-card"/>
+                                
+                                <Text text="{path: 'startDate', formatter: '.formatDate'}"/>
+                                
+                                <Text text="{path: 'endDate', formatter: '.formatDate'}"/>
+                                
+                                <ObjectNumber 
+                                    number="{days}" 
+                                    unit="days"
+                                    emphasized="true"/>
+                                
+                                <ObjectNumber 
+                                    number="{employee/leaveBalance}" 
+                                    unit="remaining"
+                                    state="{= ${employee/leaveBalance} &gt; ${days} ? 'Success' : 'Error'}"/>
+                                
+                                <Text text="{path: 'createdAt', formatter: '.formatDateTime'}"/>
+                                
+                                <HBox justifyContent="Center">
+                                    <Button 
+                                        text="Approve"
+                                        icon="sap-icon://accept" 
+                                        type="Accept"
+                                        press="onApproveRequest"/>
+                                    <Button 
+                                        text="Reject"
+                                        icon="sap-icon://decline" 
+                                        type="Reject"
+                                        press="onRejectRequest"
+                                        class="sapUiTinyMarginBegin"/>
+                                </HBox>
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+
+                </Table>
+
+                <!-- Message when no pending requests -->
+                <MessageStrip
+                    text="No pending leave requests found. All requests have been processed."
+                    type="Information"
+                    showIcon="true"
+                    visible="{= ${local>/stats/pendingCount} === 0 &amp;&amp; ${local>/selectedManagerName} !== ''}"
+                    class="sapUiResponsiveMargin"/>
+
+                <!-- Help Panel -->
+                <Panel headerText="How to Approve Requests" class="sapUiResponsiveMargin" visible="{= !${local>/selectedManagerName}}">
+                    <content>
+                        <VBox class="sapUiSmallMargin">
+                            <List>
+                                <StandardListItem
+                                    title="1. Select Manager Profile"
+                                    description="Choose your manager profile from the dropdown above"
+                                    icon="sap-icon://person-placeholder"/>
+                                <StandardListItem
+                                    title="2. Review Pending Requests"
+                                    description="Check employee details, leave duration, and available balance"
+                                    icon="sap-icon://list"/>
+                                <StandardListItem
+                                    title="3. Approve or Reject"
+                                    description="Click Approve to grant leave (balance will be deducted) or Reject with a reason"
+                                    icon="sap-icon://decision"/>
+                                <StandardListItem
+                                    title="4. Add Comments"
+                                    description="Provide feedback or reasons for your decision"
+                                    icon="sap-icon://comment"/>
+                            </List>
+                        </VBox>
+                    </content>
+                </Panel>
+
+            </VBox>
+        </content>
+    </Page>
+
+</mvc:View>
