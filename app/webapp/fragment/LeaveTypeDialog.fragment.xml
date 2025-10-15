@@ -1,0 +1,81 @@
+<core:FragmentDefinition
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:f="sap.ui.layout.form">
+
+    <Dialog
+        id="leaveTypeDialog"
+        title="{leaveTypeDialog>/title}"
+        contentWidth="500px"
+        afterClose="onLeaveTypeDialogClose">
+        
+        <content>
+            <VBox class="sapUiSmallMargin">
+                <f:SimpleForm
+                    editable="true"
+                    layout="ResponsiveGridLayout"
+                    labelSpanXL="4"
+                    labelSpanL="4"
+                    labelSpanM="12"
+                    labelSpanS="12"
+                    class="sapUiSmallMargin">
+                    
+                    <f:content>
+                        <!-- Code Input -->
+                        <Label text="Code" required="true"/>
+                        <Input
+                            id="leaveTypeCodeInput"
+                            value="{leaveTypeDialog>/code}"
+                            placeholder="e.g., ANNUAL, SICK"
+                            enabled="{leaveTypeDialog>/isNew}"
+                            required="true"
+                            maxLength="20"/>
+
+                        <!-- Name Input -->
+                        <Label text="Name" required="true"/>
+                        <Input
+                            id="leaveTypeNameInput"
+                            value="{leaveTypeDialog>/name}"
+                            placeholder="e.g., Annual Leave"
+                            required="true"
+                            maxLength="40"/>
+
+                        <!-- Max Days Input -->
+                        <Label text="Maximum Days" required="true"/>
+                        <Input
+                            id="leaveTypeMaxDaysInput"
+                            value="{leaveTypeDialog>/maxDays}"
+                            placeholder="e.g., 30"
+                            type="Number"
+                            required="true"/>
+                    </f:content>
+                </f:SimpleForm>
+
+                <!-- Validation Messages -->
+                <VBox visible="{= ${leaveTypeDialog>/showValidation}}">
+                    <MessageStrip
+                        text="{leaveTypeDialog>/validationMessage}"
+                        type="Error"
+                        showIcon="true"
+                        class="sapUiSmallMarginTop"/>
+                </VBox>
+            </VBox>
+        </content>
+
+        <beginButton>
+            <Button
+                text="{leaveTypeDialog>/buttonText}"
+                type="Emphasized"
+                press="onLeaveTypeDialogConfirm"/>
+        </beginButton>
+
+        <endButton>
+            <Button
+                text="Cancel"
+                type="Transparent"
+                press="onLeaveTypeDialogCancel"/>
+        </endButton>
+
+    </Dialog>
+
+</core:FragmentDefinition>

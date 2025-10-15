@@ -21,7 +21,7 @@ entity Manager : cuid, managed {
 }
 
 entity LeaveType : cuid {
-    code    : String(10) @unique;
+    code    : String(15) @unique;
     name    : String(40);
     maxDays : Integer;
 }
@@ -30,7 +30,7 @@ entity LeaveRequest : cuid, managed {
     employeeId    : String(10);
     employee      : Association to Employee
                         on employee.empId = employeeId;
-    leaveTypeCode : String(10);
+    leaveTypeCode : String(15);
     leaveType     : Association to LeaveType
                         on leaveType.code = leaveTypeCode;
     startDate     : Date;

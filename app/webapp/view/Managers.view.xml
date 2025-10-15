@@ -1,0 +1,151 @@
+<mvc:View
+    controllerName="com.company.leavemanagement.controller.Managers"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    displayBlock="true">
+
+    <Page title="Manager Management" showNavButton="true" navButtonPress="onNavBack">
+        <content>
+            <VBox class="sapUiContentPadding">
+                
+                <!-- Header toolbar with actions -->
+                <Toolbar class="sapUiMediumMarginBottom">
+                    <Title text="Managers" level="H2"/>
+                    <ToolbarSpacer/>
+                    <Button 
+                        text="Add Manager" 
+                        icon="sap-icon://add" 
+                        type="Emphasized"
+                        press="onAddManager"/>
+                    <Button 
+                        text="Refresh" 
+                        icon="sap-icon://refresh" 
+                        type="Transparent"
+                        press="onRefresh"/>
+                </Toolbar>
+
+                <!-- Search bar -->
+                <SearchField 
+                    id="managerSearchField"
+                    placeholder="Search by name or email..."
+                    width="100%"
+                    search="onSearch"
+                    liveChange="onSearchLiveChange"
+                    class="sapUiSmallMarginBottom"/>
+
+                <!-- Managers Table -->
+                <Table 
+                    id="managersTable"
+                    inset="false"
+                    items="{
+                        path: '/Managers',
+                        sorter: {
+                            path: 'name'
+                        }
+                    }"
+                    mode="SingleSelect"
+                    growing="true"
+                    growingThreshold="20"
+                    width="100%">
+                    
+                    <headerToolbar>
+                        <Toolbar>
+                            <Title text="All Managers" level="H3"/>
+                            <ToolbarSpacer/>
+                            <Text text="Total: {local>/totalCount}"/>
+                        </Toolbar>
+                    </headerToolbar>
+
+                    <columns>
+                        <Column width="40%">
+                            <Text text="Manager Name"/>
+                        </Column>
+                        <Column width="40%">
+                            <Text text="Email"/>
+                        </Column>
+                        <Column width="20%" hAlign="Center">
+                            <Text text="Actions"/>
+                        </Column>
+                    </columns>
+
+                    <items>
+                        <ColumnListItem press="onManagerPress">
+                            <cells>
+                                <HBox>
+                                    <core:Icon src="sap-icon://manager" class="sapUiSmallMarginEnd"/>
+                                    <Text text="{name}"/>
+                                </HBox>
+                                
+                                <Text text="{email}"/>
+                                
+                                <HBox justifyContent="Center">
+                                    <Button 
+                                        icon="sap-icon://display" 
+                                        type="Transparent"
+                                        tooltip="View Details"
+                                        press="onViewManager"/>
+                                    <Button 
+                                        icon="sap-icon://edit" 
+                                        type="Transparent"
+                                        tooltip="Edit"
+                                        press="onEditManager"/>
+                                    <Button 
+                                        icon="sap-icon://delete" 
+                                        type="Transparent"
+                                        tooltip="Delete"
+                                        press="onDeleteManager"/>
+                                </HBox>
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+
+                <!-- Statistics Panel -->
+                <Panel headerText="Manager Statistics" class="sapUiResponsiveMargin">
+                    <content>
+                        <HBox class="sapUiSmallMargin" justifyContent="SpaceAround">
+                            <VBox alignItems="Center">
+                                <Text text="{local>/stats/totalManagers}" class="sapThemeHighlight-asColor sapUiLargeText"/>
+                                <Label text="Total Managers"/>
+                            </VBox>
+                            <VBox alignItems="Center">
+                                <Text text="{local>/stats/employeesManaged}" class="sapThemePositive-asColor sapUiLargeText"/>
+                                <Label text="Employees Managed"/>
+                            </VBox>
+                            <VBox alignItems="Center">
+                                <Text text="{local>/stats/pendingApprovals}" class="sapThemeCritical-asColor sapUiLargeText"/>
+                                <Label text="Pending Approvals"/>
+                            </VBox>
+                        </HBox>
+                    </content>
+                </Panel>
+
+                <!-- Info Panel -->
+                <Panel headerText="About Manager Roles" class="sapUiResponsiveMargin">
+                    <content>
+                        <VBox class="sapUiSmallMargin">
+                            <Text text="Managers are responsible for approving leave requests from their team members." class="sapUiTinyMarginBottom"/>
+                            <List>
+                                <StandardListItem
+                                    title="Approval Authority"
+                                    description="Managers can approve or reject leave requests"
+                                    icon="sap-icon://approvals"/>
+                                <StandardListItem
+                                    title="Team Management"
+                                    description="Each employee is assigned to a manager"
+                                    icon="sap-icon://group"/>
+                                <StandardListItem
+                                    title="Dashboard Access"
+                                    description="Managers have access to the Approval Dashboard"
+                                    icon="sap-icon://business-card"/>
+                            </List>
+                        </VBox>
+                    </content>
+                </Panel>
+
+            </VBox>
+        </content>
+    </Page>
+
+</mvc:View>

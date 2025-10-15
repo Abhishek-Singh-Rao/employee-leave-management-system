@@ -58,14 +58,14 @@ sap.ui.define(
               description: "Available leave categories and limits",
               icon: "sap-icon://list",
               route: "leaveTypes",
-              available: false, // Will be implemented in Phase 3
+              available: true, // Will be implemented in Phase 3
             },
             {
               name: "Managers",
               description: "Management hierarchy for approvals",
               icon: "sap-icon://manager",
               route: "managers",
-              available: false, // Will be implemented in Phase 4
+              available: true, // Will be implemented in Phase 4
             },
             {
               name: "Approvals",

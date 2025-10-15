@@ -1,0 +1,123 @@
+<mvc:View
+    controllerName="com.company.leavemanagement.controller.LeaveTypes"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    displayBlock="true">
+
+    <Page title="Leave Type Management" showNavButton="true" navButtonPress="onNavBack">
+        <content>
+            <VBox class="sapUiContentPadding">
+                
+                <!-- Header toolbar with actions -->
+                <Toolbar class="sapUiMediumMarginBottom">
+                    <Title text="Leave Types" level="H2"/>
+                    <ToolbarSpacer/>
+                    <Button 
+                        text="Add Leave Type" 
+                        icon="sap-icon://add" 
+                        type="Emphasized"
+                        press="onAddLeaveType"/>
+                    <Button 
+                        text="Refresh" 
+                        icon="sap-icon://refresh" 
+                        type="Transparent"
+                        press="onRefresh"/>
+                </Toolbar>
+
+                <!-- Leave Types Table -->
+                <Table 
+                    id="leaveTypesTable"
+                    inset="false"
+                    items="{
+                        path: '/LeaveTypes',
+                        sorter: {
+                            path: 'code'
+                        }
+                    }"
+                    mode="SingleSelect"
+                    growing="true"
+                    growingThreshold="20"
+                    width="100%">
+                    
+                    <headerToolbar>
+                        <Toolbar>
+                            <Title text="Available Leave Types" level="H3"/>
+                            <ToolbarSpacer/>
+                            <Text text="Total: {local>/totalCount}"/>
+                        </Toolbar>
+                    </headerToolbar>
+
+                    <columns>
+                        <Column width="15%">
+                            <Text text="Code"/>
+                        </Column>
+                        <Column width="35%">
+                            <Text text="Leave Type Name"/>
+                        </Column>
+                        <Column width="20%" hAlign="Center">
+                            <Text text="Maximum Days"/>
+                        </Column>
+                        <Column width="15%" hAlign="Center">
+                            <Text text="Actions"/>
+                        </Column>
+                    </columns>
+
+                    <items>
+                        <ColumnListItem press="onLeaveTypePress">
+                            <cells>
+                                <ObjectIdentifier title="{code}"/>
+                                
+                                <Text text="{name}"/>
+                                
+                                <ObjectNumber 
+                                    number="{maxDays}" 
+                                    unit="days"
+                                    emphasized="true"
+                                    state="Success"/>
+                                
+                                <HBox justifyContent="Center">
+                                    <Button 
+                                        icon="sap-icon://edit" 
+                                        type="Transparent"
+                                        tooltip="Edit"
+                                        press="onEditLeaveType"/>
+                                    <Button 
+                                        icon="sap-icon://delete" 
+                                        type="Transparent"
+                                        tooltip="Delete"
+                                        press="onDeleteLeaveType"/>
+                                </HBox>
+                            </cells>
+                        </ColumnListItem>
+                    </items>
+                </Table>
+
+                <!-- Info Panel -->
+                <Panel headerText="Leave Type Information" class="sapUiResponsiveMargin">
+                    <content>
+                        <VBox class="sapUiSmallMargin">
+                            <Text text="Leave types define the categories of leave available to employees." class="sapUiTinyMarginBottom"/>
+                            <List>
+                                <StandardListItem
+                                    title="Code"
+                                    description="Unique identifier for the leave type (e.g., ANNUAL, SICK)"
+                                    icon="sap-icon://key"/>
+                                <StandardListItem
+                                    title="Name"
+                                    description="Display name shown to users"
+                                    icon="sap-icon://text"/>
+                                <StandardListItem
+                                    title="Maximum Days"
+                                    description="Maximum number of consecutive days allowed for this leave type"
+                                    icon="sap-icon://calendar"/>
+                            </List>
+                        </VBox>
+                    </content>
+                </Panel>
+
+            </VBox>
+        </content>
+    </Page>
+
+</mvc:View>
