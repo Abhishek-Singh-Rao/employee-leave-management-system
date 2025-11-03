@@ -23,7 +23,7 @@ sap.ui.define(
       "com.company.leavemanagement.controller.Managers",
       {
         onInit: function () {
-          console.log("Managers controller initialized");
+          console.log("👔 Managers controller initialized");
           this._initializeLocalModel();
           this._loadStatistics();
           this._pManagerDialog = null;
@@ -36,7 +36,7 @@ sap.ui.define(
         },
 
         _onRouteMatched: function () {
-          console.log("Managers route matched");
+          console.log("🔍 Managers route matched");
           this._loadStatistics();
         },
 
@@ -59,7 +59,7 @@ sap.ui.define(
             return;
           }
 
-          console.log("Loading manager statistics...");
+          console.log("📊 Loading manager statistics...");
 
           Promise.all([
             this._loadManagerCount(oModel),
@@ -67,10 +67,10 @@ sap.ui.define(
             this._loadPendingApprovalCount(oModel),
           ])
             .then(() => {
-              console.log("Manager statistics loaded successfully");
+              console.log("✅ Manager statistics loaded successfully");
             })
             .catch((error) => {
-              console.error("Failed to load statistics:", error);
+              console.error("❌ Failed to load statistics:", error);
             });
         },
 
@@ -82,10 +82,10 @@ sap.ui.define(
               const oLocalModel = this.getView().getModel("local");
               oLocalModel.setProperty("/totalCount", aContexts.length);
               oLocalModel.setProperty("/stats/totalManagers", aContexts.length);
-              console.log(`Found ${aContexts.length} managers`);
+              console.log(`📊 Found ${aContexts.length} managers`);
             })
             .catch((error) => {
-              console.error("Failed to load manager count:", error);
+              console.error("❌ Failed to load manager count:", error);
             });
         },
 
@@ -99,10 +99,10 @@ sap.ui.define(
                 "/stats/employeesManaged",
                 aContexts.length
               );
-              console.log(`Found ${aContexts.length} employees`);
+              console.log(`📊 Found ${aContexts.length} employees`);
             })
             .catch((error) => {
-              console.error("Failed to load employee count:", error);
+              console.error("❌ Failed to load employee count:", error);
             });
         },
 
@@ -117,15 +117,15 @@ sap.ui.define(
 
               const oLocalModel = this.getView().getModel("local");
               oLocalModel.setProperty("/stats/pendingApprovals", pendingCount);
-              console.log(`Found ${pendingCount} pending approvals`);
+              console.log(`📊 Found ${pendingCount} pending approvals`);
             })
             .catch((error) => {
-              console.error("Failed to load pending approval count:", error);
+              console.error("❌ Failed to load pending approval count:", error);
             });
         },
 
         _refreshTable: function () {
-          console.log("Refreshing managers table...");
+          console.log("🔄 Refreshing managers table...");
           const oTable = this.byId("managersTable");
           const oBinding = oTable.getBinding("items");
 
@@ -144,7 +144,7 @@ sap.ui.define(
         },
 
         onRefresh: function () {
-          console.log("Refresh button pressed");
+          console.log("🔄 Refresh button pressed");
           const oModel = this.getView().getModel();
           oModel.refresh();
           this._refreshTable();
@@ -152,7 +152,7 @@ sap.ui.define(
         },
 
         onSearch: function (oEvent) {
-          console.log("Search triggered");
+          console.log("🔍 Search triggered");
           const sQuery = oEvent.getParameter("query");
           this._applyFilters(sQuery);
         },
@@ -167,7 +167,7 @@ sap.ui.define(
           const oBinding = oTable.getBinding("items");
 
           if (!oBinding) {
-            console.error("Table binding not found");
+            console.error("❌ Table binding not found");
             return;
           }
 
@@ -186,11 +186,11 @@ sap.ui.define(
           }
 
           oBinding.filter(aFilters);
-          console.log("Filters applied:", { search: sSearchQuery });
+          console.log("✅ Filters applied:", { search: sSearchQuery });
         },
 
         onAddManager: function () {
-          console.log("Add manager button pressed");
+          console.log("➕ Add manager button pressed");
           this._openManagerDialog(true);
         },
 
@@ -299,7 +299,7 @@ sap.ui.define(
         },
 
         _createManager: function (oData) {
-          console.log("Creating new manager:", oData);
+          console.log("➕ Creating new manager:", oData);
 
           const oModel = this.getView().getModel();
 
@@ -309,80 +309,108 @@ sap.ui.define(
             email: oData.email.toLowerCase().trim(),
           };
 
-          console.log("Prepared manager data:", oManagerData);
+          console.log("📤 Prepared manager data:", oManagerData);
 
-          try {
-            const oListBinding = oModel.bindList("/Managers");
-            const oContext = oListBinding.create(oManagerData);
+          // Use direct AJAX call
+          const sServiceUrl = oModel.sServiceUrl || "/leave/";
+          const sUrl = sServiceUrl + "Managers";
 
-            console.log("Manager context created, submitting batch...");
+          console.log("🌐 Making POST request to:", sUrl);
 
-            oModel
-              .submitBatch(oModel.getUpdateGroupId())
-              .then(() => {
-                console.log("Batch submitted, waiting for creation...");
-                return oContext.created();
-              })
-              .then(() => {
-                console.log("✅ Manager created successfully");
-                MessageToast.show("Manager created successfully!");
+          $.ajax({
+            url: sUrl,
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(oManagerData),
+            success: (data) => {
+              console.log("✅ Manager created successfully:", data);
+              MessageToast.show("Manager created successfully!");
 
-                // Immediately refresh the table
-                this._refreshTable();
-              })
-              .catch((error) => {
-                console.error("❌ Creation failed:", error);
-                let errorMessage = "Failed to create manager";
+              // Refresh the table
+              this._refreshTable();
+            },
+            error: (xhr, status, error) => {
+              console.error("❌ Create failed");
+              console.error("❌ Status:", status);
+              console.error("❌ Error:", error);
+              console.error("❌ Response:", xhr.responseText);
 
-                if (error.message) {
-                  errorMessage += ": " + error.message;
-                }
+              let errorMessage = "Failed to create manager";
+              try {
+                const errorData = JSON.parse(xhr.responseText);
+                errorMessage = errorData.error?.message || errorMessage;
+              } catch (e) {
+                errorMessage = xhr.responseText || errorMessage;
+              }
 
-                MessageBox.error(errorMessage);
-              });
-          } catch (error) {
-            console.error("❌ Exception:", error);
-            MessageBox.error("Exception: " + error.message);
-          }
+              MessageBox.error(errorMessage);
+            },
+          });
         },
 
         _updateManager: function (oData) {
-          console.log("Updating manager:", oData);
+          console.log("📝 Updating manager:", oData);
 
           if (!this._oCurrentContext) {
-            console.error("No context found");
+            console.error("❌ No context found");
             return;
           }
 
-          try {
-            this._oCurrentContext.setProperty("name", oData.name.trim());
-            this._oCurrentContext.setProperty(
-              "email",
-              oData.email.toLowerCase().trim()
-            );
+          const oModel = this.getView().getModel();
+          const sManagerUUID = this._oCurrentContext.getProperty("ID");
 
-            const oModel = this.getView().getModel();
-            oModel
-              .submitBatch(oModel.getUpdateGroupId())
-              .then(() => {
-                console.log("✅ Manager updated successfully");
-                MessageToast.show("Manager updated successfully!");
+          console.log("📋 Manager UUID:", sManagerUUID);
 
-                // Immediately refresh the table
-                this._refreshTable();
-              })
-              .catch((error) => {
-                console.error("❌ Update failed:", error);
-                MessageBox.error("Failed to update manager: " + error.message);
-              });
-          } catch (error) {
-            console.error("❌ Exception:", error);
-            MessageBox.error("Exception: " + error.message);
-          }
+          // Prepare update data
+          const updateData = {
+            name: oData.name.trim(),
+            email: oData.email.toLowerCase().trim(),
+          };
+
+          console.log("📤 Update data:", JSON.stringify(updateData, null, 2));
+
+          // Use direct AJAX for update (PATCH request)
+          const sServiceUrl = oModel.sServiceUrl || "/leave/";
+          const sUrl = `${sServiceUrl}Managers(${sManagerUUID})`;
+
+          console.log("🌐 Making PATCH request to:", sUrl);
+
+          $.ajax({
+            url: sUrl,
+            type: "PATCH",
+            contentType: "application/json",
+            data: JSON.stringify(updateData),
+            success: (data) => {
+              console.log("✅ Manager updated successfully:", data);
+              MessageToast.show("Manager updated successfully!");
+
+              // Refresh the table
+              this._refreshTable();
+
+              // Clear current context
+              this._oCurrentContext = null;
+            },
+            error: (xhr, status, error) => {
+              console.error("❌ Update failed");
+              console.error("❌ Status:", status);
+              console.error("❌ Error:", error);
+              console.error("❌ Response:", xhr.responseText);
+
+              let errorMessage = "Failed to update manager";
+              try {
+                const errorData = JSON.parse(xhr.responseText);
+                errorMessage = errorData.error?.message || errorMessage;
+              } catch (e) {
+                errorMessage = xhr.responseText || errorMessage;
+              }
+
+              MessageBox.error(errorMessage);
+            },
+          });
         },
 
         onViewManager: function (oEvent) {
-          console.log("View button pressed");
+          console.log("👁️ View button pressed");
           const oContext = oEvent.getSource().getBindingContext();
           this.onManagerPress({
             getSource: () => ({ getBindingContext: () => oContext }),
@@ -390,26 +418,26 @@ sap.ui.define(
         },
 
         onEditManager: function (oEvent) {
-          console.log("Edit button pressed");
+          console.log("✏️ Edit button pressed");
           const oContext = oEvent.getSource().getBindingContext();
 
           if (!oContext) {
-            console.error("No binding context found");
+            console.error("❌ No binding context found");
             return;
           }
 
           const oManager = oContext.getObject();
-          console.log("Manager to edit:", oManager);
+          console.log("📋 Manager to edit:", oManager);
           this._oCurrentContext = oContext;
           this._openManagerDialog(false, oManager);
         },
 
         onDeleteManager: function (oEvent) {
-          console.log("Delete button pressed");
+          console.log("🗑️ Delete button pressed");
           const oContext = oEvent.getSource().getBindingContext();
 
           if (!oContext) {
-            console.error("No binding context found");
+            console.error("❌ No binding context found");
             return;
           }
 
@@ -422,35 +450,65 @@ sap.ui.define(
               title: "Confirm Deletion",
               onClose: (sAction) => {
                 if (sAction === MessageBox.Action.OK) {
-                  this._deleteManager(oContext);
+                  this._deleteManager(oContext, oManager);
                 }
               },
             }
           );
         },
 
-        _deleteManager: function (oContext) {
-          console.log("Deleting manager");
-          oContext
-            .delete()
-            .then(() => {
+        _deleteManager: function (oContext, oManager) {
+          console.log("🗑️ Deleting manager");
+
+          const oModel = this.getView().getModel();
+          const sManagerUUID = oContext.getProperty("ID");
+
+          console.log("📋 Manager details:");
+          console.log("   UUID:", sManagerUUID);
+          console.log("   Name:", oManager.name);
+          console.log("   Email:", oManager.email);
+
+          // Use direct AJAX for delete (DELETE request)
+          const sServiceUrl = oModel.sServiceUrl || "/leave/";
+          const sUrl = `${sServiceUrl}Managers(${sManagerUUID})`;
+
+          console.log("🌐 Making DELETE request to:", sUrl);
+
+          $.ajax({
+            url: sUrl,
+            type: "DELETE",
+            success: () => {
+              console.log("✅ Manager deleted successfully");
               MessageToast.show("Manager deleted successfully");
 
-              // Immediately refresh the table
+              // Refresh the table
               this._refreshTable();
-            })
-            .catch((error) => {
-              console.error("Delete failed:", error);
-              MessageBox.error("Failed to delete manager: " + error.message);
-            });
+            },
+            error: (xhr, status, error) => {
+              console.error("❌ Delete failed");
+              console.error("❌ Status:", status);
+              console.error("❌ Error:", error);
+              console.error("❌ Response:", xhr.responseText);
+
+              let errorMessage = "Failed to delete manager";
+              try {
+                const errorData = JSON.parse(xhr.responseText);
+                errorMessage = errorData.error?.message || errorMessage;
+              } catch (e) {
+                errorMessage = xhr.responseText || errorMessage;
+              }
+
+              MessageBox.error(errorMessage);
+            },
+          });
         },
 
         onManagerPress: function (oEvent) {
-          console.log("Manager row pressed");
+          console.log("👆 Manager row pressed");
           const oContext = oEvent.getSource().getBindingContext();
 
           if (!oContext) {
-            console.error("No binding context found");
+            console.error("❌ No binding context found");
             return;
           }
 
@@ -485,7 +543,7 @@ sap.ui.define(
               );
             })
             .catch((error) => {
-              console.error("Failed to load employees:", error);
+              console.error("❌ Failed to load employees:", error);
               MessageBox.information(
                 `Manager Details:\n\n` +
                   `Name: ${oManager.name}\n` +

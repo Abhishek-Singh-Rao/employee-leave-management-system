@@ -75,7 +75,7 @@
                                 descending: false
                             }
                         }"
-                    mode="SingleSelect"
+                    mode="None"
                     growing="true"
                     growingThreshold="20"
                     class="sapUiResponsiveMargin">
@@ -116,7 +116,7 @@
                     </columns>
 
                     <items>
-                        <ColumnListItem press="onEmployeePress">
+                        <ColumnListItem type="Navigation" press="onEmployeePress">
                             <cells>
                                 <ObjectIdentifier 
                                     title="{empId}"

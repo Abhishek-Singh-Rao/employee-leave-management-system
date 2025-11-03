@@ -3,200 +3,694 @@
     xmlns:mvc="sap.ui.core.mvc"
     xmlns="sap.m"
     xmlns:core="sap.ui.core"
+    xmlns:layout="sap.ui.layout"
+    xmlns:f="sap.f"
+    xmlns:card="sap.f.cards"
     displayBlock="true">
 
-    <Page title="Employee Leave Management Dashboard" class="sapUiContentPadding">
+<Page class="dashboardPage"
+      showHeader="true"
+      enableScrolling="true"
+      backgroundDesign="Solid"
+      title="Employee Leave Management System">
+    
+    <!-- Custom Header with Icon and Better Styling -->
+    <customHeader>
+        <Bar class="customHeaderBar">
+            <contentLeft>
+                <HBox alignItems="Center" class="headerLeft" height="100%">
+                    <core:Icon 
+                        src="sap-icon://business-objects-experience" 
+                        size="2.5rem" 
+                        color="#ffffff"
+                        class="headerLogo sapUiSmallMarginEnd"/>
+                    <VBox class="headerTextContainer" justifyContent="Center">
+                        <Title text="Employee Leave Management System" level="H2" class="headerTitle"/>
+                    </VBox>
+                </HBox>
+            </contentLeft>
+            <contentRight>
+                <HBox alignItems="Center" class="headerRight">
+                    <Label text="{local>/currentDate}" class="dateLabel sapUiSmallMarginEnd"/>
+                    <Button 
+                        icon="sap-icon://refresh" 
+                        type="Transparent"
+                        tooltip="Refresh Dashboard"
+                        press="onRefreshStats"
+                        class="headerButton"/>
+                    <Button 
+                        icon="sap-icon://bell" 
+                        type="Transparent"
+                        tooltip="Notifications"
+                        class="headerButton">
+                        <customData>
+                            <core:CustomData key="badge" value="3" />
+                        </customData>
+                    </Button>
+                    <Button 
+                        icon="sap-icon://action-settings" 
+                        type="Transparent"
+                        tooltip="Settings"
+                        class="headerButton"/>
+                </HBox>
+            </contentRight>
+        </Bar>
+    </customHeader>
+
         <content>
-            <VBox class="sapUiMediumMargin">
+            <VBox class="mainContainer">
                 
-                <!-- System Status Section -->
-                <Panel headerText="System Status" class="sapUiResponsiveMargin">
-                    <content>
-                        <VBox class="sapUiSmallMargin">
-                            <Label text="Backend Connection:" class="sapUiTinyMarginBottom"/>
-                            <ObjectStatus text="Connected" state="Success" icon="sap-icon://connected"/>
-                            
-                            <Label text="Database:" class="sapUiSmallMarginTop sapUiTinyMarginBottom"/>
-                            <ObjectStatus text="SQLite Active" state="Success" icon="sap-icon://database"/>
-                            
-                            <Label text="Service Endpoint:" class="sapUiSmallMarginTop sapUiTinyMarginBottom"/>
-                            <Link text="/leave/" href="http://localhost:4004/leave/" target="_blank"/>
-                            
-                            <Button 
-                                text="Test Connectivity" 
-                                icon="sap-icon://action" 
-                                type="Transparent"
-                                class="sapUiSmallMarginTop"
-                                press="onTestConnectivity"/>
-                        </VBox>
-                    </content>
-                </Panel>
+                <!-- Welcome Section with Improved Design -->
+                <f:Card class="welcomeCard">
+                    <f:content>
+                        <HBox justifyContent="SpaceBetween" alignItems="Center" class="welcomeContent">
+                            <VBox class="welcomeText">
+                                <Title text="Welcome Back!" level="H2" class="welcomeMainTitle"/>
+                                <Text text="Monitor and manage leave requests efficiently" class="welcomeDescription"/>
+                                <HBox alignItems="Center" class="sapUiSmallMarginTop">
+                                    <core:Icon src="sap-icon://calendar" size="1rem" color="#0a6ed1" class="sapUiTinyMarginEnd"/>
+                                    <Text text="{local>/todayDate}" class="dateText"/>
+                                </HBox>
+                            </VBox>
+                            <Avatar 
+                                src="sap-icon://hello-world" 
+                                displaySize="XL" 
+                                backgroundColor="Accent1"
+                                class="welcomeAvatar"/>
+                        </HBox>
+                    </f:content>
+                </f:Card>
 
-                <!-- Available Services Section -->
-                <Panel headerText="Available Services" class="sapUiResponsiveMargin">
-                    <content>
-                        <VBox class="sapUiSmallMargin">
-                            <Text text="OData V4 Entities Available:" class="sapUiTinyMarginBottom"/>
-                            <List items="{local>/serviceList}" showSeparators="Inner">
-                                <StandardListItem 
-                                    title="{local>name}" 
-                                    description="{local>description}"
-                                    icon="{local>icon}"
-                                    type="Navigation"
-                                    press="onServicePress">
+                <!-- Statistics Cards - Uniform Grid -->
+                <layout:Grid defaultSpan="XL3 L3 M6 S12" class="statsGrid">
+                    
+                    <!-- Total Employees Card -->
+                    <f:Card class="statsCard blueStatsCard">
+                        <f:content>
+                            <VBox class="statsContent">
+                                <HBox justifyContent="SpaceBetween" alignItems="Start" class="statsHeader">
+                                    <VBox>
+                                        <Label text="TOTAL EMPLOYEES" class="statsLabel"/>
+                                        <HBox alignItems="End" class="sapUiTinyMarginTop">
+                                            <Title text="{local>/stats/employeeCount}" level="H1" class="statsNumber"/>
+                                            <Text text="active" class="statsUnit"/>
+                                        </HBox>
+                                    </VBox>
+                                    <Avatar 
+                                        src="sap-icon://employee" 
+                                        displaySize="L" 
+                                        backgroundColor="Transparent"
+                                        class="statsIconAvatar blueIcon"/>
+                                </HBox>
+                                <ProgressIndicator 
+                                    percentValue="100" 
+                                    displayValue=""
+                                    state="None"
+                                    showValue="false"
+                                    class="statsProgress blueProgress"/>
+                                <BusyIndicator visible="{local>/stats/isLoading}" size="1rem" class="sapUiTinyMarginTop"/>
+                            </VBox>
+                        </f:content>
+                    </f:Card>
+
+                    <!-- Pending Requests Card -->
+                    <f:Card class="statsCard orangeStatsCard">
+                        <f:content>
+                            <VBox class="statsContent">
+                                <HBox justifyContent="SpaceBetween" alignItems="Start" class="statsHeader">
+                                    <VBox>
+                                        <Label text="PENDING REQUESTS" class="statsLabel"/>
+                                        <HBox alignItems="End" class="sapUiTinyMarginTop">
+                                            <Title text="{local>/stats/pendingRequests}" level="H1" class="statsNumber"/>
+                                            <Text text="awaiting" class="statsUnit"/>
+                                        </HBox>
+                                    </VBox>
+                                    <Avatar 
+                                        src="sap-icon://pending" 
+                                        displaySize="L" 
+                                        backgroundColor="Transparent"
+                                        class="statsIconAvatar orangeIcon"/>
+                                </HBox>
+                                <ProgressIndicator 
+                                    percentValue="75" 
+                                    displayValue=""
+                                    state="Warning"
+                                    showValue="false"
+                                    class="statsProgress orangeProgress"/>
+                                <BusyIndicator visible="{local>/stats/isLoading}" size="1rem" class="sapUiTinyMarginTop"/>
+                            </VBox>
+                        </f:content>
+                    </f:Card>
+
+                    <!-- Approved Today Card -->
+                    <f:Card class="statsCard greenStatsCard">
+                        <f:content>
+                            <VBox class="statsContent">
+                                <HBox justifyContent="SpaceBetween" alignItems="Start" class="statsHeader">
+                                    <VBox>
+                                        <Label text="APPROVED TODAY" class="statsLabel"/>
+                                        <HBox alignItems="End" class="sapUiTinyMarginTop">
+                                            <Title text="{local>/stats/approvedToday}" level="H1" class="statsNumber"/>
+                                            <Text text="requests" class="statsUnit"/>
+                                        </HBox>
+                                    </VBox>
+                                    <Avatar 
+                                        src="sap-icon://accept" 
+                                        displaySize="L" 
+                                        backgroundColor="Transparent"
+                                        class="statsIconAvatar greenIcon"/>
+                                </HBox>
+                                <ProgressIndicator 
+                                    percentValue="100" 
+                                    displayValue=""
+                                    state="Success"
+                                    showValue="false"
+                                    class="statsProgress greenProgress"/>
+                                <BusyIndicator visible="{local>/stats/isLoading}" size="1rem" class="sapUiTinyMarginTop"/>
+                            </VBox>
+                        </f:content>
+                    </f:Card>
+
+                    <!-- System Status Card -->
+                    <f:Card class="statsCard purpleStatsCard">
+                        <f:content>
+                            <VBox class="statsContent">
+                                <HBox justifyContent="SpaceBetween" alignItems="Start" class="statsHeader">
+                                    <VBox>
+                                        <Label text="SYSTEM STATUS" class="statsLabel"/>
+                                        <HBox alignItems="End" class="sapUiTinyMarginTop">
+                                            <Title text="100%" level="H1" class="statsNumber"/>
+                                            <Text text="uptime" class="statsUnit"/>
+                                        </HBox>
+                                    </VBox>
+                                    <Avatar 
+                                        src="sap-icon://monitor-payments" 
+                                        displaySize="L" 
+                                        backgroundColor="Transparent"
+                                        class="statsIconAvatar purpleIcon"/>
+                                </HBox>
+                                <ProgressIndicator 
+                                    percentValue="100" 
+                                    displayValue=""
+                                    state="Success"
+                                    showValue="false"
+                                    class="statsProgress purpleProgress"/>
+                                <ObjectStatus text="All Systems Online" state="Success" class="systemStatus"/>
+                            </VBox>
+                        </f:content>
+                    </f:Card>
+
+                </layout:Grid>
+
+                <!-- Quick Actions Section - Improved Layout -->
+                <f:Card class="quickActionsCard">
+                    <f:header>
+                        <card:Header
+                            iconSrc="sap-icon://activities"
+                            title="Quick Actions"
+                            subtitle="Access frequently used features"/>
+                    </f:header>
+                    <f:content>
+                        <layout:Grid defaultSpan="XL4 L4 M6 S12" class="actionGrid">
+                            
+                            <VBox class="actionCard activeAction">
+                                <HBox alignItems="Center" class="actionHeader">
+                                    <Avatar 
+                                        src="sap-icon://employee" 
+                                        displaySize="L" 
+                                        backgroundColor="Accent1"
+                                        class="actionAvatar"/>
+                                    <VBox class="actionTextContainer">
+                                        <Title text="Manage Employees" level="H5" class="actionTitle"/>
+                                        <Text text="Add, edit, or view employee details" class="actionText"/>
+                                    </VBox>
+                                </HBox>
+                                <Button 
+                                    text="Open Module" 
+                                    icon="sap-icon://arrow-right"
+                                    iconFirst="false"
+                                    type="Emphasized"
+                                    width="100%"
+                                    press="onManageEmployees"
+                                    class="actionButton"/>
+                            </VBox>
+
+                            <VBox class="actionCard inactiveAction">
+                                <HBox alignItems="Center" class="actionHeader">
+                                    <Avatar 
+                                        src="sap-icon://add-document" 
+                                        displaySize="L" 
+                                        backgroundColor="Accent4"
+                                        class="actionAvatar"/>
+                                    <VBox class="actionTextContainer">
+                                        <Title text="New Leave Request" level="H5" class="actionTitle"/>
+                                        <Text text="Submit a new leave application" class="actionText"/>
+                                    </VBox>
+                                </HBox>
+                                <Button 
+                                    text="Coming Soon" 
+                                    icon="sap-icon://future"
+                                    iconFirst="false"
+                                    type="Default"
+                                    width="100%"
+                                    enabled="false"
+                                    class="actionButton"/>
+                            </VBox>
+
+                            <VBox class="actionCard inactiveAction">
+                                <HBox alignItems="Center" class="actionHeader">
+                                    <Avatar 
+                                        src="sap-icon://approvals" 
+                                        displaySize="L" 
+                                        backgroundColor="Accent3"
+                                        class="actionAvatar"/>
+                                    <VBox class="actionTextContainer">
+                                        <Title text="Pending Approvals" level="H5" class="actionTitle"/>
+                                        <Text text="Review and approve requests" class="actionText"/>
+                                    </VBox>
+                                </HBox>
+                                <Button 
+                                    text="Coming Soon" 
+                                    icon="sap-icon://future"
+                                    iconFirst="false"
+                                    type="Default"
+                                    width="100%"
+                                    enabled="false"
+                                    class="actionButton"/>
+                            </VBox>
+
+                        </layout:Grid>
+                    </f:content>
+                </f:Card>
+
+                <!-- Available Services - Uniform Tile Grid -->
+                <f:Card class="servicesCard">
+                    <f:header>
+                        <card:Header
+                            iconSrc="sap-icon://grid"
+                            title="Available Services"
+                            subtitle="Explore all system modules"/>
+                    </f:header>
+                    <f:content>
+                        <layout:Grid defaultSpan="XL2 L2 M4 S6" class="servicesGrid">
+                            
+                            <!-- Employee Tile -->
+                            <VBox class="serviceTileWrapper">
+                                <GenericTile 
+                                    header="Employees"
+                                    subheader="Master Data"
+                                    press="onServicePress"
+                                    class="uniformServiceTile tileBlue">
+                                    <TileContent>
+                                        <VBox alignItems="Center" justifyContent="Center" class="tileIconContainer">
+                                            <Avatar 
+                                                src="sap-icon://employee" 
+                                                displaySize="XL" 
+                                                backgroundColor="Transparent"
+                                                class="tileIcon"/>
+                                        </VBox>
+                                    </TileContent>
                                     <customData>
-                                        <core:CustomData key="route" value="{local>route}" />
+                                        <core:CustomData key="route" value="employeeList" />
+                                        <core:CustomData key="available" value="true" />
                                     </customData>
-                                </StandardListItem>
-                            </List>
-                        </VBox>
-                    </content>
-                </Panel>
+                                </GenericTile>
+                            </VBox>
 
-                <!-- Quick Tests Section -->
-                <Panel headerText="Quick Tests" class="sapUiResponsiveMargin">
-                    <content>
-                        <VBox class="sapUiSmallMargin">
-                            <HBox class="sapUiTinyMarginBottom">
+                            <!-- Leave Requests Tile -->
+                            <VBox class="serviceTileWrapper">
+                                <GenericTile 
+                                    header="Requests"
+                                    subheader="Track Leaves"
+                                    press="onServicePress"
+                                    class="uniformServiceTile tileOrange">
+                                    <TileContent>
+                                        <VBox alignItems="Center" justifyContent="Center" class="tileIconContainer">
+                                            <Avatar 
+                                                src="sap-icon://request" 
+                                                displaySize="XL" 
+                                                backgroundColor="Transparent"
+                                                class="tileIcon"/>
+                                        </VBox>
+                                    </TileContent>
+                                    <customData>
+                                        <core:CustomData key="route" value="leaveRequests" />
+                                        <core:CustomData key="available" value="true" />
+                                    </customData>
+                                </GenericTile>
+                            </VBox>
+
+                            <!-- Leave Types Tile -->
+                            <VBox class="serviceTileWrapper">
+                                <GenericTile 
+                                    header="Leave Types"
+                                    subheader="Categories"
+                                    press="onServicePress"
+                                    class="uniformServiceTile tileGreen">
+                                    <TileContent>
+                                        <VBox alignItems="Center" justifyContent="Center" class="tileIconContainer">
+                                            <Avatar 
+                                                src="sap-icon://list" 
+                                                displaySize="XL" 
+                                                backgroundColor="Transparent"
+                                                class="tileIcon"/>
+                                        </VBox>
+                                    </TileContent>
+                                    <customData>
+                                        <core:CustomData key="route" value="leaveTypes" />
+                                        <core:CustomData key="available" value="true" />
+                                    </customData>
+                                </GenericTile>
+                            </VBox>
+
+                            <!-- Managers Tile -->
+                            <VBox class="serviceTileWrapper">
+                                <GenericTile 
+                                    header="Managers"
+                                    subheader="Hierarchy"
+                                    press="onServicePress"
+                                    class="uniformServiceTile tilePurple">
+                                    <TileContent>
+                                        <VBox alignItems="Center" justifyContent="Center" class="tileIconContainer">
+                                            <Avatar 
+                                                src="sap-icon://manager" 
+                                                displaySize="XL" 
+                                                backgroundColor="Transparent"
+                                                class="tileIcon"/>
+                                        </VBox>
+                                    </TileContent>
+                                    <customData>
+                                        <core:CustomData key="route" value="managers" />
+                                        <core:CustomData key="available" value="true" />
+                                    </customData>
+                                </GenericTile>
+                            </VBox>
+
+                            <!-- Approvals Tile -->
+                            <VBox class="serviceTileWrapper">
+                                <GenericTile 
+                                    header="Approvals"
+                                    subheader="Decisions"
+                                    press="onServicePress"
+                                    class="uniformServiceTile tileTeal">
+                                    <TileContent>
+                                        <VBox alignItems="Center" justifyContent="Center" class="tileIconContainer">
+                                            <Avatar 
+                                                src="sap-icon://approve" 
+                                                displaySize="XL" 
+                                                backgroundColor="Transparent"
+                                                class="tileIcon"/>
+                                        </VBox>
+                                    </TileContent>
+                                    <customData>
+                                        <core:CustomData key="route" value="approvals" />
+                                        <core:CustomData key="available" value="true" />
+                                    </customData>
+                                </GenericTile>
+                            </VBox>
+
+                            <!-- Reports Tile -->
+                            <VBox class="serviceTileWrapper">
+                                <GenericTile 
+                                    header="Reports"
+                                    subheader="Analytics"
+                                    press="onServicePress"
+                                    class="uniformServiceTile tileRed disabledTile">
+                                    <TileContent>
+                                        <VBox alignItems="Center" justifyContent="Center" class="tileIconContainer">
+                                            <Avatar 
+                                                src="sap-icon://bar-chart" 
+                                                displaySize="XL" 
+                                                backgroundColor="Transparent"
+                                                class="tileIcon"/>
+                                            <Label text="Coming Soon" class="comingSoonBadge"/>
+                                        </VBox>
+                                    </TileContent>
+                                    <customData>
+                                        <core:CustomData key="route" value="reports" />
+                                        <core:CustomData key="available" value="false" />
+                                    </customData>
+                                </GenericTile>
+                            </VBox>
+
+                        </layout:Grid>
+                    </f:content>
+                </f:Card>
+
+                <!-- System Health & Testing - Side by Side Layout -->
+                <layout:Grid defaultSpan="XL6 L6 M12 S12" class="systemGrid">
+                    
+                    <!-- System Health Card -->
+                    <f:Card class="systemHealthCard">
+                        <f:header>
+                            <card:Header
+                                iconSrc="sap-icon://sys-monitor"
+                                title="System Health"
+                                subtitle="Real-time monitoring"/>
+                        </f:header>
+                        <f:content>
+                            <VBox class="systemContent">
+                                
+                                <!-- Backend Status -->
+                                <HBox class="statusItem" justifyContent="SpaceBetween" alignItems="Center">
+                                    <HBox alignItems="Center">
+                                        <core:Icon src="sap-icon://connected" size="1.5rem" color="#107e3e" class="statusIcon"/>
+                                        <VBox>
+                                            <Label text="Backend Connection" class="statusLabel"/>
+                                            <Label text="CAP Service Layer" class="statusSubLabel"/>
+                                        </VBox>
+                                    </HBox>
+                                    <ObjectStatus text="Online" state="Success" icon="sap-icon://status-positive"/>
+                                </HBox>
+                                
+                                <ProgressIndicator 
+                                    percentValue="100" 
+                                    displayValue="100% Available" 
+                                    state="Success"
+                                    class="statusProgress"/>
+                                
+                                <!-- Database Status -->
+                                <HBox class="statusItem" justifyContent="SpaceBetween" alignItems="Center">
+                                    <HBox alignItems="Center">
+                                        <core:Icon src="sap-icon://database" size="1.5rem" color="#0a6ed1" class="statusIcon"/>
+                                        <VBox>
+                                            <Label text="Database" class="statusLabel"/>
+                                            <Label text="SQLite Active" class="statusSubLabel"/>
+                                        </VBox>
+                                    </HBox>
+                                    <ObjectStatus text="Operational" state="Success" icon="sap-icon://status-positive"/>
+                                </HBox>
+                                
+                                <ProgressIndicator 
+                                    percentValue="100" 
+                                    displayValue="All Tables Ready" 
+                                    state="Success"
+                                    class="statusProgress"/>
+                                
+                                <!-- Service Endpoint -->
+                                <VBox class="endpointSection">
+                                    <Label text="Service Endpoint" class="endpointLabel"/>
+                                    <HBox alignItems="Center">
+                                        <core:Icon src="sap-icon://chain-link" size="1rem" class="endpointIcon"/>
+                                        <Link 
+                                            text="http://localhost:4004/leave/" 
+                                            href="http://localhost:4004/leave/" 
+                                            target="_blank"
+                                            class="endpointLink"/>
+                                    </HBox>
+                                </VBox>
+                                
+                                <Button 
+                                    text="Test Connectivity" 
+                                    icon="sap-icon://measuring-point"
+                                    type="Emphasized"
+                                    width="100%"
+                                    press="onTestConnectivity"
+                                    class="testConnectivityButton"/>
+                            </VBox>
+                        </f:content>
+                    </f:Card>
+
+                    <!-- Data Testing Card -->
+                    <f:Card class="dataTestingCard">
+                        <f:header>
+                            <card:Header
+                                iconSrc="sap-icon://stethoscope"
+                                title="Data Testing"
+                                subtitle="Verify backend operations"/>
+                        </f:header>
+                        <f:content>
+                            <VBox class="testingContent">
+                                <MessageStrip 
+                                    text="Test data loading from backend services"
+                                    type="Information"
+                                    showIcon="true"
+                                    class="testingMessageStrip"/>
+                                
                                 <Button 
                                     text="Load Employees" 
                                     icon="sap-icon://employee" 
                                     type="Emphasized"
-                                    class="sapUiSmallMarginEnd"
-                                    press="onLoadEmployees"/>
+                                    width="100%"
+                                    press="onLoadEmployees"
+                                    class="testDataButton employeeButton"/>
                                 
                                 <Button 
                                     text="Load Leave Requests" 
                                     icon="sap-icon://request" 
-                                    type="Default"
-                                    class="sapUiSmallMarginEnd"
-                                    press="onLoadLeaveRequests"/>
+                                    type="Accept"
+                                    width="100%"
+                                    press="onLoadLeaveRequests"
+                                    class="testDataButton requestButton"/>
                                 
                                 <Button 
                                     text="Load Leave Types" 
                                     icon="sap-icon://list" 
-                                    type="Default"
-                                    press="onLoadLeaveTypes"/>
-                            </HBox>
-                        </VBox>
-                    </content>
-                </Panel>
-
-                <!-- Statistics Panel -->
-                <Panel headerText="Quick Statistics" class="sapUiResponsiveMargin">
-                    <content>
-                        <VBox class="sapUiSmallMargin">
-                            
-                            <!-- Loading indicator -->
-                            <BusyIndicator visible="{local>/stats/isLoading}" class="sapUiSmallMarginBottom"/>
-                            
-                            <VBox visible="{= !${local>/stats/isLoading}}">
-                                <HBox justifyContent="SpaceBetween" class="sapUiTinyMarginBottom">
-                                    <Label text="Total Employees:"/>
-                                    <Text text="{local>/stats/employeeCount}" class="sapThemeHighlight-asColor"/>
-                                </HBox>
+                                    type="Attention"
+                                    width="100%"
+                                    press="onLoadLeaveTypes"
+                                    class="testDataButton typeButton"/>
                                 
-                                <HBox justifyContent="SpaceBetween" class="sapUiTinyMarginBottom">
-                                    <Label text="Pending Requests:"/>
-                                    <Text text="{local>/stats/pendingRequests}" 
-                                          class="{= ${local>/stats/pendingRequests} > 0 ? 'sapThemeCritical-asColor' : 'sapThemePositive-asColor'}"/>
-                                </HBox>
-                                
-                                <HBox justifyContent="SpaceBetween" class="sapUiTinyMarginBottom">
-                                    <Label text="Approved Today:"/>
-                                    <Text text="{local>/stats/approvedToday}" class="sapThemePositive-asColor"/>
-                                </HBox>
                             </VBox>
-                            
-                            <Button 
-                                text="Refresh Stats" 
-                                icon="sap-icon://refresh"
-                                type="Transparent"
-                                width="100%"
-                                class="sapUiSmallMarginTop"
-                                press="onRefreshStats"/>
-                        </VBox>
-                    </content>
-                </Panel>
+                        </f:content>
+                    </f:Card>
 
-                <!-- Data Results Section -->
-                <Panel headerText="Test Results" 
-                       class="sapUiResponsiveMargin" 
+                </layout:Grid>
+
+                <!-- Test Results Section -->
+                <f:Card class="resultsDisplayCard" 
                        visible="{local>/testResults/visible}">
-                    <headerToolbar>
-                        <Toolbar>
-                            <Title text="{local>/testResults/title}"/>
-                            <ToolbarSpacer/>
-                            <Button icon="sap-icon://decline" 
+                    <f:header>
+                        <card:Header
+                            iconSrc="sap-icon://database"
+                            title="{local>/testResults/title}"
+                            subtitle="Total: {local>/testResults/totalCount} records"/>
+                    </f:header>
+                    <f:content>
+                        <VBox class="resultsContent">
+                            <HBox justifyContent="End" class="resultsToolbar">
+                                <Button 
+                                    icon="sap-icon://decline" 
+                                    text="Clear Results"
                                     type="Transparent" 
-                                    tooltip="Clear Results"
                                     press="onClearResults"/>
-                        </Toolbar>
-                    </headerToolbar>
-                    <content>
-                        <VBox class="sapUiSmallMargin">
-                            <Text text="Total Records: {local>/testResults/totalCount}" 
-                                  class="sapUiTinyMarginBottom sapThemeHighlight-asColor"/>
-                            
-                            <List items="{local>/testResults/data}" showSeparators="Inner">
-                                <CustomListItem>
+                            </HBox>
+                            <List items="{local>/testResults/data}" 
+                                  showSeparators="None"
+                                  class="resultsList">
+                                <CustomListItem class="resultListItem">
                                     <content>
-                                        <VBox class="sapUiSmallMargin">
-                                            <Label text="Record {local>index}:" class="sapUiTinyMarginBottom"/>
-                                            <FormattedText htmlText="&lt;pre&gt;{local>data}&lt;/pre&gt;" 
-                                                          class="sapUiCodeFont"/>
+                                        <VBox class="resultItemContent">
+                                            <HBox justifyContent="SpaceBetween" alignItems="Center" class="resultItemHeader">
+                                                <Title text="Record {local>index}" level="H5" class="recordTitle"/>
+                                                <core:Icon src="sap-icon://database" size="1.5rem" color="#0a6ed1"/>
+                                            </HBox>
+                                            <Panel backgroundDesign="Transparent" class="codePanel">
+                                                <content>
+                                                    <FormattedText htmlText="&lt;pre class='codeBlock'&gt;{local>data}&lt;/pre&gt;"/>
+                                                </content>
+                                            </Panel>
                                         </VBox>
                                     </content>
                                 </CustomListItem>
                             </List>
                         </VBox>
-                    </content>
-                </Panel>
+                    </f:content>
+                </f:Card>
 
-                <!-- Getting Started Section (only visible when no test results) -->
-                <Panel headerText="Getting Started" 
-                       class="sapUiResponsiveMargin"
+                <!-- Getting Started Guide -->
+                <f:Card class="gettingStartedCard"
                        visible="{= !${local>/testResults/visible}}">
-                    <content>
-                        <VBox class="sapUiSmallMargin">
-                            <Text text="Welcome to the Employee Leave Management System!" 
-                                  class="sapUiLargeMarginBottom"/>
-                            
-                            <Text text="Quick Start Guide:" class="sapUiTinyMarginBottom"/>
-                            
-                            <List>
-                                <StandardListItem 
-                                    title="1. Test Data Loading" 
-                                    description="Use the 'Quick Tests' buttons above to verify backend connectivity"
-                                    icon="sap-icon://play"/>
-                                    
-                                <StandardListItem 
-                                    title="2. Explore Services" 
-                                    description="Click on items in 'Available Services' to see what's coming next"
-                                    icon="sap-icon://explorer"/>
-                                    
-                                <StandardListItem 
-                                    title="3. Monitor Statistics" 
-                                    description="The statistics panel shows real-time data from your leave management system"
-                                    icon="sap-icon://bar-chart"/>
-                                    
-                                <StandardListItem 
-                                    title="4. Next Phase" 
-                                    description="Employee management interface will be added in the next development phase"
-                                    icon="sap-icon://future"/>
-                            </List>
-                            
+                    <f:header>
+                        <card:Header
+                            iconSrc="sap-icon://learning-assistant"
+                            title="Getting Started Guide"
+                            subtitle="Quick start for new users"/>
+                    </f:header>
+                    <f:content>
+                        <VBox class="guideContent">
                             <MessageStrip 
-                                text="✅ System is ready for Phase 2 development - Employee CRUD interface!"
+                                text="Welcome to the Employee Leave Management System! Follow these steps to get started."
                                 type="Success"
                                 showIcon="true"
-                                class="sapUiMediumMarginTop"/>
+                                class="guideMessageStrip"/>
+                            
+                            <VBox class="stepsContainer">
+                                <!-- Step 1 -->
+                                <HBox alignItems="Start" class="guideStep">
+                                    <Avatar 
+                                        initials="1" 
+                                        displaySize="M" 
+                                        backgroundColor="Accent1"
+                                        class="stepAvatar"/>
+                                    <VBox class="stepTextContainer">
+                                        <Title text="Test Data Loading" level="H5" class="stepTitle"/>
+                                        <Text text="Use the 'Data Testing' card to verify backend connectivity and data loading capabilities." class="stepDescription"/>
+                                    </VBox>
+                                </HBox>
+                                
+                                <!-- Step 2 -->
+                                <HBox alignItems="Start" class="guideStep">
+                                    <Avatar 
+                                        initials="2" 
+                                        displaySize="M" 
+                                        backgroundColor="Accent4"
+                                        class="stepAvatar"/>
+                                    <VBox class="stepTextContainer">
+                                        <Title text="Explore Services" level="H5" class="stepTitle"/>
+                                        <Text text="Click on service tiles to navigate to different modules and explore system features." class="stepDescription"/>
+                                    </VBox>
+                                </HBox>
+                                
+                                <!-- Step 3 -->
+                                <HBox alignItems="Start" class="guideStep">
+                                    <Avatar 
+                                        initials="3" 
+                                        displaySize="M" 
+                                        backgroundColor="Accent3"
+                                        class="stepAvatar"/>
+                                    <VBox class="stepTextContainer">
+                                        <Title text="Monitor Statistics" level="H5" class="stepTitle"/>
+                                        <Text text="The statistics cards at the top show real-time data from your leave management system." class="stepDescription"/>
+                                    </VBox>
+                                </HBox>
+                                
+                                <!-- Step 4 -->
+                                <HBox alignItems="Start" class="guideStep">
+                                    <Avatar 
+                                        initials="4" 
+                                        displaySize="M" 
+                                        backgroundColor="Accent6"
+                                        class="stepAvatar"/>
+                                    <VBox class="stepTextContainer">
+                                        <Title text="Manage Employees" level="H5" class="stepTitle"/>
+                                        <Text text="Employee management interface is ready! Start adding and managing your workforce." class="stepDescription"/>
+                                    </VBox>
+                                </HBox>
+                            </VBox>
                         </VBox>
-                    </content>
-                </Panel>
+                    </f:content>
+                </f:Card>
 
             </VBox>
         </content>
+        
+        <!-- Professional Footer -->
+        <footer>
+            <Toolbar design="Transparent" class="customFooter">
+                <ToolbarSpacer/>
+                <HBox alignItems="Center" class="footerContent">
+                    <core:Icon src="sap-icon://customer" size="1.2rem" color="#0a6ed1" class="footerIcon"/>
+                    <Text text="Employee Leave Management System v1.0" class="footerMainText"/>
+                    <ToolbarSeparator/>
+                    <core:Icon src="sap-icon://sap-logo-shape" size="1rem" color="#0a6ed1" class="footerIcon"/>
+                    <Text text="Powered by SAP CAP Framework" class="footerText"/>
+                    <ToolbarSeparator/>
+                    <Text text="© 2025 All Rights Reserved" class="footerText"/>
+                </HBox>
+                <ToolbarSpacer/>
+            </Toolbar>
+        </footer>
     </Page>
 
 </mvc:View>

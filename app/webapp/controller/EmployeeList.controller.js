@@ -144,16 +144,49 @@ sap.ui.define(
         },
 
         _deleteEmployee: function (oContext) {
-          oContext
-            .delete()
-            .then(() => {
+          const oModel = this.getView().getModel();
+          const oEmployee = oContext.getObject();
+          const sEmployeeUUID = oContext.getProperty("ID");
+
+          console.log("🗑️ Deleting employee:", oEmployee.empId);
+          console.log("🗑️ Employee UUID:", sEmployeeUUID);
+          console.log("🗑️ Context path:", oContext.getPath());
+
+          // Use direct AJAX for delete (DELETE request)
+          const sServiceUrl = oModel.sServiceUrl || "/leave/";
+          const sUrl = `${sServiceUrl}Employees(${sEmployeeUUID})`;
+
+          console.log("🌐 Making DELETE request to:", sUrl);
+
+          $.ajax({
+            url: sUrl,
+            type: "DELETE",
+            success: () => {
+              console.log("✅ Employee deleted successfully");
               MessageToast.show("Employee deleted successfully");
+
+              // Refresh the table
+              const oListBinding = oModel.bindList("/Employees");
+              oListBinding.refresh();
               this._loadStatistics();
-            })
-            .catch((error) => {
-              console.error("❌ Delete failed:", error);
-              MessageBox.error("Failed to delete employee: " + error.message);
-            });
+            },
+            error: (xhr, status, error) => {
+              console.error("❌ Delete failed");
+              console.error("❌ Status:", status);
+              console.error("❌ Error:", error);
+              console.error("❌ Response:", xhr.responseText);
+
+              let errorMessage = "Failed to delete employee";
+              try {
+                const errorData = JSON.parse(xhr.responseText);
+                errorMessage = errorData.error?.message || errorMessage;
+              } catch (e) {
+                errorMessage = xhr.responseText || errorMessage;
+              }
+
+              MessageBox.error(errorMessage);
+            },
+          });
         },
 
         _openEmployeeDialog: function (oContext) {
@@ -254,29 +287,74 @@ sap.ui.define(
           const oContext = this._editContext;
           const oModel = this.getView().getModel();
 
-          oContext.setProperty("name", oEmployee.name);
-          oContext.setProperty("email", oEmployee.email);
-          oContext.setProperty(
-            "leaveBalance",
-            parseInt(oEmployee.leaveBalance)
+          console.log("📝 Updating employee:", oEmployee.empId);
+          console.log("📝 Context path:", oContext.getPath());
+          console.log(
+            "📝 Employee ID from context:",
+            oContext.getProperty("ID")
           );
 
-          if (oEmployee.managerId) {
-            oContext.setProperty("managerId", parseInt(oEmployee.managerId));
+          // Get the employee ID (UUID) from context
+          const sEmployeeUUID = oContext.getProperty("ID");
+
+          // Prepare update data
+          const updateData = {
+            name: oEmployee.name,
+            email: oEmployee.email,
+            leaveBalance: parseInt(oEmployee.leaveBalance),
+          };
+
+          // Add manager if selected
+          if (
+            oEmployee.managerId &&
+            oEmployee.managerId !== "" &&
+            oEmployee.managerId !== null
+          ) {
+            updateData.managerId = oEmployee.managerId;
+          } else {
+            updateData.managerId = null; // Explicitly set to null to clear manager
           }
 
-          oModel
-            .submitBatch("updateGroup")
-            .then(() => {
+          console.log("📤 Update data:", JSON.stringify(updateData, null, 2));
+
+          // Use direct AJAX for update (PATCH request)
+          const sServiceUrl = oModel.sServiceUrl || "/leave/";
+          const sUrl = `${sServiceUrl}Employees(${sEmployeeUUID})`;
+
+          console.log("🌐 Making PATCH request to:", sUrl);
+
+          $.ajax({
+            url: sUrl,
+            type: "PATCH",
+            contentType: "application/json",
+            data: JSON.stringify(updateData),
+            success: (data) => {
+              console.log("✅ Employee updated successfully:", data);
               MessageToast.show("Employee updated successfully");
               this._closeEmployeeDialog();
+
+              // Refresh the table
+              const oListBinding = oModel.bindList("/Employees");
+              oListBinding.refresh();
               this._loadStatistics();
-              console.log("✅ Employee updated");
-            })
-            .catch((error) => {
-              console.error("❌ Update failed:", error);
-              MessageBox.error("Failed to update employee: " + error.message);
-            });
+            },
+            error: (xhr, status, error) => {
+              console.error("❌ Update failed");
+              console.error("❌ Status:", status);
+              console.error("❌ Error:", error);
+              console.error("❌ Response:", xhr.responseText);
+
+              let errorMessage = "Failed to update employee";
+              try {
+                const errorData = JSON.parse(xhr.responseText);
+                errorMessage = errorData.error?.message || errorMessage;
+              } catch (e) {
+                errorMessage = xhr.responseText || errorMessage;
+              }
+
+              MessageBox.error(errorMessage);
+            },
+          });
         },
 
         _createEmployee: function (oEmployee, oModel) {

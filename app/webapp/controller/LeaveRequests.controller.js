@@ -23,7 +23,7 @@ sap.ui.define(
       "com.company.leavemanagement.controller.LeaveRequests",
       {
         onInit: function () {
-          console.log("LeaveRequests controller initialized");
+          console.log("📋 LeaveRequests controller initialized");
           this._initializeLocalModel();
           this._loadStatistics();
 
@@ -35,7 +35,7 @@ sap.ui.define(
         },
 
         _onRouteMatched: function () {
-          console.log("Leave Requests route matched");
+          console.log("🔍 Leave Requests route matched");
           this.onRefresh();
         },
 
@@ -90,7 +90,7 @@ sap.ui.define(
 
               oLocalModel.setProperty("/totalRequests", totalRequests);
 
-              console.log("Leave request statistics loaded:", {
+              console.log("📊 Leave request statistics loaded:", {
                 totalRequests,
                 pendingCount,
                 approvedCount,
@@ -98,26 +98,26 @@ sap.ui.define(
               });
             })
             .catch((error) => {
-              console.error("Failed to load statistics:", error);
+              console.error("❌ Failed to load statistics:", error);
             });
         },
 
         // Navigation
         onNavBack: function () {
-          console.log("Back button pressed");
+          console.log("⬅️ Back button pressed");
           const oRouter = this.getOwnerComponent().getRouter();
           oRouter.navTo("home");
         },
 
         onNewLeaveRequest: function () {
-          console.log("Navigating to Leave Request Form");
+          console.log("➕ Navigating to Leave Request Form");
           const oRouter = this.getOwnerComponent().getRouter();
           oRouter.navTo("leaveRequestForm");
         },
 
         // Search and Filter
         onSearch: function (oEvent) {
-          console.log("Search triggered");
+          console.log("🔍 Search triggered");
           const sQuery = oEvent.getParameter("query");
           this._applyFilters(sQuery);
         },
@@ -128,7 +128,7 @@ sap.ui.define(
         },
 
         onStatusFilter: function (oEvent) {
-          console.log("Status filter changed");
+          console.log("🎯 Status filter changed");
           const oSelectedItem = oEvent.getParameter("selectedItem");
           const sSelectedKey = oSelectedItem ? oSelectedItem.getKey() : "";
 
@@ -139,7 +139,7 @@ sap.ui.define(
         },
 
         onLeaveTypeFilter: function (oEvent) {
-          console.log("Leave type filter changed");
+          console.log("📝 Leave type filter changed");
           const oSelectedItem = oEvent.getParameter("selectedItem");
           const sSelectedKey = oSelectedItem ? oSelectedItem.getKey() : "";
 
@@ -154,7 +154,7 @@ sap.ui.define(
           const oBinding = oTable.getBinding("items");
 
           if (!oBinding) {
-            console.error("Table binding not found");
+            console.error("❌ Table binding not found");
             return;
           }
 
@@ -197,7 +197,7 @@ sap.ui.define(
 
           oBinding.filter(aFilters);
 
-          console.log("Filters applied:", {
+          console.log("✅ Filters applied:", {
             search: sQuery,
             status: sStatus,
             leaveType: sLeaveType,
@@ -205,7 +205,7 @@ sap.ui.define(
         },
 
         onClearFilters: function () {
-          console.log("Clear filters pressed");
+          console.log("🧹 Clear filters pressed");
           this.byId("leaveRequestSearchField").setValue("");
           this.byId("leaveRequestStatusFilter").setSelectedKey("");
           this.byId("leaveRequestTypeFilter").setSelectedKey("");
@@ -223,11 +223,11 @@ sap.ui.define(
 
         // Table actions
         onRequestPress: function (oEvent) {
-          console.log("Request row pressed");
+          console.log("👆 Request row pressed");
           const oContext = oEvent.getSource().getBindingContext();
 
           if (!oContext) {
-            console.error("No binding context found");
+            console.error("❌ No binding context found");
             return;
           }
 
@@ -252,7 +252,7 @@ sap.ui.define(
         },
 
         onViewRequest: function (oEvent) {
-          console.log("View button pressed");
+          console.log("👁️ View button pressed");
           const oContext = oEvent.getSource().getBindingContext();
           this.onRequestPress({
             getSource: () => ({ getBindingContext: () => oContext }),
@@ -260,11 +260,11 @@ sap.ui.define(
         },
 
         onCancelRequest: function (oEvent) {
-          console.log("Cancel button pressed");
+          console.log("🗑️ Cancel button pressed");
           const oContext = oEvent.getSource().getBindingContext();
 
           if (!oContext) {
-            console.error("No binding context found");
+            console.error("❌ No binding context found");
             return;
           }
 
@@ -281,31 +281,66 @@ sap.ui.define(
               title: "Cancel Leave Request",
               onClose: (sAction) => {
                 if (sAction === MessageBox.Action.OK) {
-                  this._cancelLeaveRequest(oContext);
+                  this._cancelLeaveRequest(oContext, oRequest);
                 }
               },
             }
           );
         },
 
-        _cancelLeaveRequest: function (oContext) {
-          console.log("Cancelling leave request");
-          oContext
-            .delete()
-            .then(() => {
+        _cancelLeaveRequest: function (oContext, oRequest) {
+          console.log("🗑️ Cancelling leave request");
+
+          const oModel = this.getView().getModel();
+          const sLeaveRequestUUID = oContext.getProperty("ID");
+
+          console.log("📋 Leave Request details:");
+          console.log("   UUID:", sLeaveRequestUUID);
+          console.log("   Employee:", oRequest.employee?.name);
+          console.log("   Status:", oRequest.status);
+          console.log("   Context path:", oContext.getPath());
+
+          // Use direct AJAX for delete (DELETE request)
+          const sServiceUrl = oModel.sServiceUrl || "/leave/";
+          const sUrl = `${sServiceUrl}LeaveRequests(${sLeaveRequestUUID})`;
+
+          console.log("🌐 Making DELETE request to:", sUrl);
+
+          $.ajax({
+            url: sUrl,
+            type: "DELETE",
+            success: () => {
+              console.log("✅ Leave request cancelled successfully");
               MessageToast.show("Leave request cancelled successfully");
+
+              // Refresh the table
+              const oListBinding = oModel.bindList("/LeaveRequests");
+              oListBinding.refresh();
+
+              // Reload statistics
               this._loadStatistics();
-            })
-            .catch((error) => {
-              console.error("Cancel failed:", error);
-              MessageBox.error(
-                "Failed to cancel leave request: " + error.message
-              );
-            });
+            },
+            error: (xhr, status, error) => {
+              console.error("❌ Cancel failed");
+              console.error("❌ Status:", status);
+              console.error("❌ Error:", error);
+              console.error("❌ Response:", xhr.responseText);
+
+              let errorMessage = "Failed to cancel leave request";
+              try {
+                const errorData = JSON.parse(xhr.responseText);
+                errorMessage = errorData.error?.message || errorMessage;
+              } catch (e) {
+                errorMessage = xhr.responseText || errorMessage;
+              }
+
+              MessageBox.error(errorMessage);
+            },
+          });
         },
 
         onRefresh: function () {
-          console.log("Refresh button pressed");
+          console.log("🔄 Refresh button pressed");
           const oModel = this.getView().getModel();
           oModel.refresh();
           this._loadStatistics();

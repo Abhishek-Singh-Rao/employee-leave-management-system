@@ -37,7 +37,22 @@ sap.ui.define(
 
       _initializeLocalModel: function () {
         // Create local JSON model for view data
+        const today = new Date();
+        const formattedDate = today.toLocaleDateString("en-US", {
+          weekday: "long",
+          year: "numeric",
+          month: "long",
+          day: "numeric",
+        });
+        const shortDate = today.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+        });
+
         const oLocalModel = new JSONModel({
+          currentDate: formattedDate,
+          todayDate: shortDate,
           serviceList: [
             {
               name: "Employees",
@@ -58,21 +73,21 @@ sap.ui.define(
               description: "Available leave categories and limits",
               icon: "sap-icon://list",
               route: "leaveTypes",
-              available: true, // Will be implemented in Phase 3
+              available: true,
             },
             {
               name: "Managers",
               description: "Management hierarchy for approvals",
               icon: "sap-icon://manager",
               route: "managers",
-              available: true, // Will be implemented in Phase 4
+              available: true,
             },
             {
               name: "Approvals",
               description: "Decision history and workflow",
               icon: "sap-icon://approve",
               route: "approvals",
-              available: true, // Will be implemented in Phase 4
+              available: true,
             },
           ],
           stats: {
@@ -137,10 +152,14 @@ sap.ui.define(
           .then(() => {
             oLocalModel.setProperty("/stats/isLoading", false);
             console.log("📊 All statistics loaded successfully");
+            MessageToast.show("📊 Dashboard refreshed successfully!", {
+              duration: 2000,
+            });
           })
           .catch((error) => {
             console.error("❌ Failed to load statistics:", error);
             oLocalModel.setProperty("/stats/isLoading", false);
+            MessageToast.show("⚠️ Failed to load some statistics");
           });
       },
 
@@ -172,7 +191,7 @@ sap.ui.define(
               const request = ctx.getObject();
               if (request.status !== "Approved") return false;
 
-              // Check if approved today (simplified - you might want to check Approval entity)
+              // Check if approved today
               const today = new Date().toISOString().split("T")[0];
               return request.modifiedAt && request.modifiedAt.startsWith(today);
             }).length;
@@ -192,35 +211,40 @@ sap.ui.define(
       },
 
       _loadApprovedTodayCount: function (oModel) {
-        // This could be enhanced to check the Approvals entity for today's approvals
-        return Promise.resolve(); // Already handled in _loadPendingRequestsCount
+        // Already handled in _loadPendingRequestsCount
+        return Promise.resolve();
       },
 
-      // Navigation handlers
+      // Navigation handlers - Enhanced for GenericTile
       onServicePress: function (oEvent) {
-        const oBindingContext = oEvent.getSource().getBindingContext("local");
-        const oService = oBindingContext.getObject();
+        const oTile = oEvent.getSource();
+        const sRoute = oTile.data("route");
+        const bAvailable = oTile.data("available") === "true";
+        const sServiceName = oTile.getHeader();
 
-        console.log("🔗 Service pressed:", oService.name);
+        console.log(
+          "🔗 Service tile pressed:",
+          sServiceName,
+          "Route:",
+          sRoute,
+          "Available:",
+          bAvailable
+        );
 
-        if (oService.available && oService.route) {
+        if (bAvailable && sRoute) {
           const oRouter = this.getOwnerComponent().getRouter();
-          oRouter.navTo(oService.route);
-          MessageToast.show(`Navigating to ${oService.name}...`);
+          oRouter.navTo(sRoute);
+          MessageToast.show(`✨ Navigating to ${sServiceName}...`, {
+            duration: 2000,
+          });
         } else {
-          MessageToast.show(
-            `${oService.name} - Coming in ${
-              oService.route === "leaveRequests" ||
-              oService.route === "leaveTypes"
-                ? "Phase 3"
-                : "Phase 4"
-            }`
-          );
+          MessageToast.show(`🚀 ${sServiceName} - Coming in future phases!`, {
+            duration: 3000,
+          });
         }
       },
 
       onQuickActionPress: function (oEvent) {
-        // Get the action from custom data or binding context
         const oButton = oEvent.getSource();
         const sRoute = oButton.data("route");
         const bAvailable = oButton.data("available") === "true";
@@ -228,12 +252,15 @@ sap.ui.define(
         if (bAvailable && sRoute) {
           const oRouter = this.getOwnerComponent().getRouter();
           oRouter.navTo(sRoute);
+          MessageToast.show("✨ Navigating...", { duration: 2000 });
         } else {
-          MessageToast.show("Feature coming in future phases");
+          MessageToast.show("🚀 Feature coming in future phases!", {
+            duration: 3000,
+          });
         }
       },
 
-      // Enhanced test button handlers with result display
+      // Enhanced test button handlers
       onLoadEmployees: function () {
         console.log("🔄 Testing employee data load...");
         const oModel = this.getView().getModel();
@@ -242,6 +269,9 @@ sap.ui.define(
           MessageToast.show("❌ No model available");
           return;
         }
+
+        // Show loading toast
+        MessageToast.show("⏳ Loading employees...", { duration: 1500 });
 
         oModel
           .bindList("/Employees")
@@ -252,12 +282,15 @@ sap.ui.define(
 
             this._displayTestResults("Employees", employees);
             MessageToast.show(
-              `✅ Loaded ${employees.length} employees successfully!`
+              `✅ Loaded ${employees.length} employees successfully!`,
+              { duration: 3000 }
             );
           })
           .catch((error) => {
             console.error("❌ Failed to load employees:", error);
-            MessageToast.show("❌ Failed to load employees");
+            MessageToast.show("❌ Failed to load employees", {
+              duration: 3000,
+            });
           });
       },
 
@@ -270,6 +303,8 @@ sap.ui.define(
           return;
         }
 
+        MessageToast.show("⏳ Loading leave requests...", { duration: 1500 });
+
         oModel
           .bindList("/LeaveRequests")
           .requestContexts(0, 10)
@@ -279,12 +314,15 @@ sap.ui.define(
 
             this._displayTestResults("Leave Requests", requests);
             MessageToast.show(
-              `✅ Loaded ${requests.length} leave requests successfully!`
+              `✅ Loaded ${requests.length} leave requests successfully!`,
+              { duration: 3000 }
             );
           })
           .catch((error) => {
             console.error("❌ Failed to load leave requests:", error);
-            MessageToast.show("❌ Failed to load leave requests");
+            MessageToast.show("❌ Failed to load leave requests", {
+              duration: 3000,
+            });
           });
       },
 
@@ -297,6 +335,8 @@ sap.ui.define(
           return;
         }
 
+        MessageToast.show("⏳ Loading leave types...", { duration: 1500 });
+
         oModel
           .bindList("/LeaveTypes")
           .requestContexts(0, 10)
@@ -306,12 +346,15 @@ sap.ui.define(
 
             this._displayTestResults("Leave Types", leaveTypes);
             MessageToast.show(
-              `✅ Loaded ${leaveTypes.length} leave types successfully!`
+              `✅ Loaded ${leaveTypes.length} leave types successfully!`,
+              { duration: 3000 }
             );
           })
           .catch((error) => {
             console.error("❌ Failed to load leave types:", error);
-            MessageToast.show("❌ Failed to load leave types");
+            MessageToast.show("❌ Failed to load leave types", {
+              duration: 3000,
+            });
           });
       },
 
@@ -332,17 +375,31 @@ sap.ui.define(
           data: aFormattedData,
           totalCount: aData.length,
         });
+
+        // Smooth scroll to results
+        setTimeout(() => {
+          const oPage = this.getView().byId("page");
+          const oResultsCard = this.byId("testResultsCard");
+
+          if (oPage && oResultsCard) {
+            oResultsCard.getDomRef().scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+          }
+        }, 200);
       },
 
       onRefreshStats: function () {
         console.log("🔄 Refreshing statistics...");
+        MessageToast.show("🔄 Refreshing dashboard...", { duration: 1500 });
         this._loadStatistics();
-        MessageToast.show("📊 Statistics refreshed");
       },
 
       onClearResults: function () {
         const oLocalModel = this.getView().getModel("local");
         oLocalModel.setProperty("/testResults/visible", false);
+        MessageToast.show("✨ Results cleared", { duration: 2000 });
       },
 
       onTestConnectivity: function () {
@@ -354,6 +411,8 @@ sap.ui.define(
           return;
         }
 
+        MessageToast.show("⏳ Testing connectivity...", { duration: 1500 });
+
         // Test with a simple metadata request
         try {
           oModel
@@ -361,18 +420,22 @@ sap.ui.define(
             .requestObject("/$EntityContainer")
             .then((oMetadata) => {
               console.log("✅ Metadata loaded:", oMetadata);
-              MessageToast.show("✅ Backend connectivity: SUCCESS");
+              MessageToast.show("✅ Backend connectivity: SUCCESS", {
+                duration: 3000,
+              });
 
               // Display metadata info
               this._displayTestResults("Service Metadata", [oMetadata]);
             })
             .catch((error) => {
               console.error("❌ Connectivity test failed:", error);
-              MessageToast.show("❌ Backend connectivity: FAILED");
+              MessageToast.show("❌ Backend connectivity: FAILED", {
+                duration: 3000,
+              });
             });
         } catch (error) {
           console.error("❌ Connectivity test error:", error);
-          MessageToast.show("❌ Connectivity test failed");
+          MessageToast.show("❌ Connectivity test failed", { duration: 3000 });
         }
       },
 
@@ -380,6 +443,9 @@ sap.ui.define(
       onManageEmployees: function () {
         const oRouter = this.getOwnerComponent().getRouter();
         oRouter.navTo("employeeList");
+        MessageToast.show("✨ Navigating to Employee Management...", {
+          duration: 2000,
+        });
       },
     });
   }

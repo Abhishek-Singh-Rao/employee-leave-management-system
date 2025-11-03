@@ -25,7 +25,7 @@ sap.ui.define(
 
         _onRouteMatched: function (oEvent) {
           const sEmployeeId = oEvent.getParameter("arguments").employeeId;
-          console.log("📍 Employee Detail route matched for ID:", sEmployeeId);
+          console.log("🔍 Employee Detail route matched for ID:", sEmployeeId);
 
           this._loadEmployeeData(sEmployeeId);
         },
@@ -175,24 +175,57 @@ sap.ui.define(
               icon: MessageBox.Icon.WARNING,
               onClose: (sAction) => {
                 if (sAction === MessageBox.Action.OK) {
-                  this._deleteEmployee(oContext);
+                  this._deleteEmployee(oContext, oEmployee);
                 }
               },
             }
           );
         },
 
-        _deleteEmployee: function (oContext) {
-          oContext
-            .delete()
-            .then(() => {
+        _deleteEmployee: function (oContext, oEmployee) {
+          console.log("🗑️ Deleting employee from detail page");
+
+          const oModel = this.getView().getModel();
+          const sEmployeeUUID = oContext.getProperty("ID");
+
+          console.log("📋 Employee details:");
+          console.log("   UUID:", sEmployeeUUID);
+          console.log("   empId:", oEmployee.empId);
+          console.log("   Name:", oEmployee.name);
+
+          // Use direct AJAX for delete (DELETE request)
+          const sServiceUrl = oModel.sServiceUrl || "/leave/";
+          const sUrl = `${sServiceUrl}Employees(${sEmployeeUUID})`;
+
+          console.log("🌐 Making DELETE request to:", sUrl);
+
+          $.ajax({
+            url: sUrl,
+            type: "DELETE",
+            success: () => {
+              console.log("✅ Employee deleted successfully");
               MessageToast.show("Employee deleted successfully");
+
+              // Navigate back to employee list
               this.onNavBack();
-            })
-            .catch((error) => {
-              console.error("❌ Delete failed:", error);
-              MessageBox.error("Failed to delete employee: " + error.message);
-            });
+            },
+            error: (xhr, status, error) => {
+              console.error("❌ Delete failed");
+              console.error("❌ Status:", status);
+              console.error("❌ Error:", error);
+              console.error("❌ Response:", xhr.responseText);
+
+              let errorMessage = "Failed to delete employee";
+              try {
+                const errorData = JSON.parse(xhr.responseText);
+                errorMessage = errorData.error?.message || errorMessage;
+              } catch (e) {
+                errorMessage = xhr.responseText || errorMessage;
+              }
+
+              MessageBox.error(errorMessage);
+            },
+          });
         },
 
         // Leave Request Actions
@@ -323,36 +356,8 @@ sap.ui.define(
             return;
           }
 
-          if (!this._oBalanceDialog) {
-            Fragment.load({
-              id: this.getView().getId(),
-              name: "com.company.leavemanagement.fragment.AdjustBalanceDialog",
-              controller: this,
-            })
-              .then((oDialog) => {
-                this._oBalanceDialog = oDialog;
-                this.getView().addDependent(oDialog);
-                this._showBalanceDialog();
-              })
-              .catch(() => {
-                // Fallback to simple input dialog if fragment not found
-                this._showSimpleBalanceDialog();
-              });
-          } else {
-            this._showBalanceDialog();
-          }
-        },
-
-        _showBalanceDialog: function () {
-          const oEmployee = this.getView().getBindingContext().getObject();
-          const oDialogModel = new JSONModel({
-            currentBalance: oEmployee.leaveBalance,
-            newBalance: oEmployee.leaveBalance,
-            adjustment: 0,
-            reason: "",
-          });
-          this._oBalanceDialog.setModel(oDialogModel, "dialog");
-          this._oBalanceDialog.open();
+          // Use simple dialog approach
+          this._showSimpleBalanceDialog();
         },
 
         _showSimpleBalanceDialog: function () {
@@ -367,7 +372,6 @@ sap.ui.define(
               initialFocus: MessageBox.Action.OK,
               onClose: (sAction) => {
                 if (sAction === MessageBox.Action.OK) {
-                  // Simple implementation - in real scenario, use proper dialog
                   const sNewBalance = prompt(
                     "Enter new leave balance:",
                     oEmployee.leaveBalance
@@ -384,43 +388,47 @@ sap.ui.define(
         _updateLeaveBalance: function (iNewBalance) {
           const oContext = this.getView().getBindingContext();
           const oModel = this.getView().getModel();
+          const sEmployeeUUID = oContext.getProperty("ID");
 
-          oContext.setProperty("leaveBalance", iNewBalance);
+          console.log("💰 Updating leave balance");
+          console.log("   UUID:", sEmployeeUUID);
+          console.log("   New balance:", iNewBalance);
 
-          oModel
-            .submitBatch("updateGroup")
-            .then(() => {
+          // Use direct AJAX for update (PATCH request)
+          const sServiceUrl = oModel.sServiceUrl || "/leave/";
+          const sUrl = `${sServiceUrl}Employees(${sEmployeeUUID})`;
+
+          console.log("🌐 Making PATCH request to:", sUrl);
+
+          $.ajax({
+            url: sUrl,
+            type: "PATCH",
+            contentType: "application/json",
+            data: JSON.stringify({ leaveBalance: iNewBalance }),
+            success: (data) => {
+              console.log("✅ Leave balance updated successfully");
               MessageToast.show("Leave balance updated successfully");
-              this._closeBalanceDialog();
-            })
-            .catch((error) => {
-              console.error("❌ Balance update failed:", error);
-              MessageBox.error(
-                "Failed to update leave balance: " + error.message
-              );
-            });
-        },
 
-        onSaveBalance: function () {
-          const oDialogModel = this._oBalanceDialog.getModel("dialog");
-          const iNewBalance = oDialogModel.getProperty("/newBalance");
+              // Refresh the view binding
+              this.getView().getElementBinding().refresh();
+            },
+            error: (xhr, status, error) => {
+              console.error("❌ Balance update failed");
+              console.error("❌ Status:", status);
+              console.error("❌ Error:", error);
+              console.error("❌ Response:", xhr.responseText);
 
-          if (isNaN(iNewBalance) || iNewBalance < 0) {
-            MessageBox.error("Please enter a valid positive number");
-            return;
-          }
+              let errorMessage = "Failed to update leave balance";
+              try {
+                const errorData = JSON.parse(xhr.responseText);
+                errorMessage = errorData.error?.message || errorMessage;
+              } catch (e) {
+                errorMessage = xhr.responseText || errorMessage;
+              }
 
-          this._updateLeaveBalance(iNewBalance);
-        },
-
-        onCancelBalance: function () {
-          this._closeBalanceDialog();
-        },
-
-        _closeBalanceDialog: function () {
-          if (this._oBalanceDialog) {
-            this._oBalanceDialog.close();
-          }
+              MessageBox.error(errorMessage);
+            },
+          });
         },
 
         // Formatters

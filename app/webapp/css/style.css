@@ -97,3 +97,782 @@
 .sapUiMediumMarginBottom {
     margin-bottom: 0.5rem !important;
 }
+/* ========================================
+   Employee Leave Management System
+   Enhanced Professional Dashboard Styles
+   ======================================== */
+
+/* ============ Global Styles ============ */
+.dashboardPage {
+    background: #f5f7fa !important;
+}
+
+.mainContainer {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 1.5rem;
+}
+
+/* ============ Header Styles ============ */
+.customHeaderBar {
+    background: linear-gradient(135deg, #0a6ed1 0%, #1e88e5 100%) !important;
+    box-shadow: 0 4px 12px rgba(10, 110, 209, 0.25) !important;
+    min-height: 1rem !important;
+    padding: 1rem 0 !important;
+}
+
+.headerLeft {
+    gap: 1rem;
+}
+
+.headerLogo .sapMAvatar {
+    background: rgba(255, 255, 255, 0.2) !important;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.headerLogo .sapUiIcon {
+    color: white !important;
+    font-size: 2rem !important;
+}
+
+.headerTextContainer {
+    gap: 0.25rem;
+}
+
+.headerTitle {
+    color: white !important;
+    font-weight: 700 !important;
+    font-size: 1.5rem !important;
+    margin: 0 !important;
+}
+
+
+.headerRight {
+    gap: 0.5rem;
+}
+
+.dateLabel {
+    color: white !important;
+    font-weight: 500;
+}
+
+.headerButton .sapMBtnInner {
+    color: white !important;
+    background: rgba(255, 255, 255, 0.15) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.headerButton:hover .sapMBtnInner {
+    background: rgba(255, 255, 255, 0.25) !important;
+}
+
+/* ============ Welcome Card Styles ============ */
+.welcomeCard {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fb 100%) !important;
+    border-radius: 16px !important;
+    border: 1px solid #e8eaed !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+    margin-bottom: 1.5rem !important;
+}
+
+.welcomeContent {
+    padding: 2rem !important;
+}
+
+.welcomeText {
+    gap: 0.5rem;
+}
+
+.welcomeMainTitle {
+    color: #172b4d !important;
+    font-weight: 700 !important;
+    font-size: 2rem !important;
+    margin: 0 !important;
+}
+
+.welcomeDescription {
+    color: #5e6c84 !important;
+    font-size: 1rem !important;
+}
+
+.dateText {
+    color: #0a6ed1 !important;
+    font-weight: 500;
+}
+
+.welcomeAvatar {
+    opacity: 0.1;
+}
+
+/* ============ Statistics Cards ============ */
+.statsGrid {
+    margin-bottom: 1.5rem !important;
+    gap: 1rem !important;
+}
+
+.statsCard {
+    border-radius: 16px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+    overflow: hidden !important;
+    position: relative !important;
+    border: 1px solid transparent !important;
+}
+
+.statsCard:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12) !important;
+}
+
+.statsCard::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+}
+
+.blueStatsCard {
+    background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%) !important;
+}
+
+.blueStatsCard::before {
+    background: linear-gradient(90deg, #0a6ed1, #1e88e5);
+}
+
+.blueStatsCard:hover {
+    border-color: #0a6ed1 !important;
+}
+
+.orangeStatsCard {
+    background: linear-gradient(135deg, #ffffff 0%, #fff8f0 100%) !important;
+}
+
+.orangeStatsCard::before {
+    background: linear-gradient(90deg, #e65100, #f57c00);
+}
+
+.orangeStatsCard:hover {
+    border-color: #f57c00 !important;
+}
+
+.greenStatsCard {
+    background: linear-gradient(135deg, #ffffff 0%, #f0fff4 100%) !important;
+}
+
+.greenStatsCard::before {
+    background: linear-gradient(90deg, #107e3e, #2e7d32);
+}
+
+.greenStatsCard:hover {
+    border-color: #2e7d32 !important;
+}
+
+.purpleStatsCard {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f0ff 100%) !important;
+}
+
+.purpleStatsCard::before {
+    background: linear-gradient(90deg, #6a1b9a, #8e24aa);
+}
+
+.purpleStatsCard:hover {
+    border-color: #8e24aa !important;
+}
+
+.statsContent {
+    padding: 1.5rem !important;
+}
+
+.statsHeader {
+    margin-bottom: 1rem !important;
+}
+
+.statsLabel {
+    color: #5e6c84 !important;
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.8px !important;
+}
+
+.statsNumber {
+    color: #172b4d !important;
+    font-weight: 800 !important;
+    font-size: 2.5rem !important;
+    line-height: 1 !important;
+    margin: 0.5rem 0 0 0 !important;
+}
+
+.statsUnit {
+    color: #5e6c84 !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    margin-left: 0.5rem !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.statsIconAvatar {
+    opacity: 0.2;
+}
+
+.blueIcon .sapUiIcon {
+    color: #0a6ed1 !important;
+}
+
+.orangeIcon .sapUiIcon {
+    color: #f57c00 !important;
+}
+
+.greenIcon .sapUiIcon {
+    color: #2e7d32 !important;
+}
+
+.purpleIcon .sapUiIcon {
+    color: #8e24aa !important;
+}
+
+.statsProgress {
+    height: 6px !important;
+}
+
+.statsProgress .sapMPIBar {
+    height: 6px !important;
+    border-radius: 3px !important;
+}
+
+.blueProgress .sapMPIBarInner {
+    background: linear-gradient(90deg, #0a6ed1, #1e88e5) !important;
+}
+
+.orangeProgress .sapMPIBarInner {
+    background: linear-gradient(90deg, #e65100, #f57c00) !important;
+}
+
+.greenProgress .sapMPIBarInner {
+    background: linear-gradient(90deg, #107e3e, #2e7d32) !important;
+}
+
+.purpleProgress .sapMPIBarInner {
+    background: linear-gradient(90deg, #6a1b9a, #8e24aa) !important;
+}
+
+.systemStatus {
+    margin-top: 0.5rem !important;
+}
+
+/* ============ Quick Actions Card ============ */
+.quickActionsCard {
+    border-radius: 16px !important;
+    border: 1px solid #e8eaed !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+    margin-bottom: 1.5rem !important;
+}
+
+.actionGrid {
+    padding: 1rem !important;
+    gap: 1rem !important;
+}
+
+.actionCard {
+    background: #ffffff !important;
+    border-radius: 12px !important;
+    padding: 1.5rem !important;
+    border: 2px solid #e8eaed !important;
+    transition: all 0.3s ease !important;
+}
+
+.activeAction:hover {
+    border-color: #0a6ed1 !important;
+    box-shadow: 0 8px 16px rgba(10, 110, 209, 0.15) !important;
+    transform: translateY(-4px);
+}
+
+.inactiveAction {
+    opacity: 0.7;
+}
+
+.actionHeader {
+    gap: 1rem !important;
+    margin-bottom: 1rem !important;
+}
+
+.actionAvatar {
+    flex-shrink: 0;
+}
+
+.actionTextContainer {
+    gap: 0.25rem;
+}
+
+.actionTitle {
+    color: #172b4d !important;
+    font-weight: 600 !important;
+    font-size: 1rem !important;
+    margin: 0 !important;
+}
+
+.actionText {
+    color: #5e6c84 !important;
+    font-size: 0.875rem !important;
+    line-height: 1.4 !important;
+}
+
+.actionButton {
+    margin-top: auto !important;
+}
+
+/* ============ Services Card ============ */
+.servicesCard {
+    border-radius: 16px !important;
+    border: 1px solid #e8eaed !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+    margin-bottom: 1.5rem !important;
+}
+
+.servicesGrid {
+    padding: 1rem !important;
+    gap: 1rem !important;
+}
+
+.serviceTileWrapper {
+    padding: 0 !important;
+}
+
+.uniformServiceTile {
+    height: 180px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.uniformServiceTile .sapMGT {
+    border: 2px solid #e8eaed !important;
+    border-radius: 12px !important;
+    height: 100% !important;
+}
+
+.uniformServiceTile:hover .sapMGT {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12) !important;
+}
+
+.tileBlue:hover .sapMGT {
+    border-color: #0a6ed1 !important;
+    background: linear-gradient(135deg, #ffffff 0%, #e8f4fd 100%) !important;
+}
+
+.tileOrange:hover .sapMGT {
+    border-color: #f57c00 !important;
+    background: linear-gradient(135deg, #ffffff 0%, #fff3e0 100%) !important;
+}
+
+.tileGreen:hover .sapMGT {
+    border-color: #2e7d32 !important;
+    background: linear-gradient(135deg, #ffffff 0%, #e8f5e9 100%) !important;
+}
+
+.tilePurple:hover .sapMGT {
+    border-color: #8e24aa !important;
+    background: linear-gradient(135deg, #ffffff 0%, #f3e5f5 100%) !important;
+}
+
+.tileTeal:hover .sapMGT {
+    border-color: #00897b !important;
+    background: linear-gradient(135deg, #ffffff 0%, #e0f2f1 100%) !important;
+}
+
+.tileRed:hover .sapMGT {
+    border-color: #d32f2f !important;
+    background: linear-gradient(135deg, #ffffff 0%, #ffebee 100%) !important;
+}
+
+.disabledTile {
+    opacity: 0.6;
+}
+
+.tileIconContainer {
+    height: 100%;
+    padding: 1rem;
+}
+
+.tileIcon .sapUiIcon {
+    font-size: 3rem !important;
+}
+
+.tileBlue .tileIcon .sapUiIcon {
+    color: #0a6ed1 !important;
+}
+
+.tileOrange .tileIcon .sapUiIcon {
+    color: #f57c00 !important;
+}
+
+.tileGreen .tileIcon .sapUiIcon {
+    color: #2e7d32 !important;
+}
+
+.tilePurple .tileIcon .sapUiIcon {
+    color: #8e24aa !important;
+}
+
+.tileTeal .tileIcon .sapUiIcon {
+    color: #00897b !important;
+}
+
+.tileRed .tileIcon .sapUiIcon {
+    color: #d32f2f !important;
+}
+
+.comingSoonBadge {
+    background: #fff3cd !important;
+    color: #856404 !important;
+    padding: 0.25rem 0.75rem !important;
+    border-radius: 12px !important;
+    font-size: 0.75rem !important;
+    font-weight: 600 !important;
+    margin-top: 0.5rem !important;
+}
+
+/* ============ System Health & Testing ============ */
+.systemGrid {
+    margin-bottom: 1.5rem !important;
+    gap: 1rem !important;
+}
+
+.systemHealthCard,
+.dataTestingCard {
+    border-radius: 16px !important;
+    border: 1px solid #e8eaed !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+}
+
+.systemContent,
+.testingContent {
+    padding: 1.5rem !important;
+}
+
+.statusItem {
+    background: #f8f9fa !important;
+    padding: 1rem !important;
+    border-radius: 8px !important;
+    margin-bottom: 1rem !important;
+}
+
+.statusIcon {
+    margin-right: 1rem !important;
+}
+
+.statusLabel {
+    font-weight: 600 !important;
+    color: #172b4d !important;
+    font-size: 0.875rem !important;
+}
+
+.statusSubLabel {
+    color: #5e6c84 !important;
+    font-size: 0.75rem !important;
+}
+
+.statusProgress {
+    margin-bottom: 1rem !important;
+}
+
+.endpointSection {
+    background: #e8f4fd !important;
+    padding: 1rem !important;
+    border-radius: 8px !important;
+    border-left: 4px solid #0a6ed1 !important;
+    margin-bottom: 1rem !important;
+}
+
+.endpointLabel {
+    font-weight: 600 !important;
+    color: #172b4d !important;
+    margin-bottom: 0.5rem !important;
+}
+
+.endpointIcon {
+    margin-right: 0.5rem !important;
+}
+
+.endpointLink {
+    font-weight: 500 !important;
+}
+
+.testConnectivityButton {
+    margin-top: 0.5rem !important;
+}
+
+.testingMessageStrip {
+    margin-bottom: 1rem !important;
+}
+
+.testDataButton {
+    margin-bottom: 0.75rem !important;
+    transition: all 0.2s ease !important;
+}
+
+.testDataButton:hover {
+    transform: scale(1.02);
+}
+
+.testDataButton:last-child {
+    margin-bottom: 0 !important;
+}
+
+/* ============ Results Card ============ */
+.resultsDisplayCard {
+    border-radius: 16px !important;
+    border: 1px solid #e8eaed !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+    margin-bottom: 1.5rem !important;
+    animation: slideUp 0.4s ease !important;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.resultsContent {
+    padding: 1.5rem !important;
+}
+
+.resultsToolbar {
+    margin-bottom: 1rem !important;
+}
+
+.resultsList {
+    max-height: 600px;
+    overflow-y: auto;
+}
+
+.resultListItem {
+    margin-bottom: 1rem !important;
+}
+
+.resultItemContent {
+    padding: 1rem !important;
+}
+
+.resultItemHeader {
+    margin-bottom: 1rem !important;
+}
+
+.recordTitle {
+    color: #172b4d !important;
+    font-weight: 600 !important;
+}
+
+.codePanel {
+    background: #282c34 !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+}
+
+.codeBlock {
+    margin: 0 !important;
+    padding: 1rem !important;
+    font-size: 0.875rem !important;
+    font-family: 'Monaco', 'Menlo', 'Courier New', monospace !important;
+    color: #abb2bf !important;
+    background: #282c34 !important;
+    overflow-x: auto !important;
+    line-height: 1.6 !important;
+}
+
+.codeBlock::-webkit-scrollbar {
+    height: 8px;
+}
+
+.codeBlock::-webkit-scrollbar-track {
+    background: #21252b;
+}
+
+.codeBlock::-webkit-scrollbar-thumb {
+    background: #4b5263;
+    border-radius: 4px;
+}
+
+.codeBlock::-webkit-scrollbar-thumb:hover {
+    background: #5c6370;
+}
+
+/* ============ Getting Started Card ============ */
+.gettingStartedCard {
+    border-radius: 16px !important;
+    border: 1px solid #e8eaed !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
+    margin-bottom: 1.5rem !important;
+}
+
+.guideContent {
+    padding: 1.5rem !important;
+}
+
+.guideMessageStrip {
+    margin-bottom: 1.5rem !important;
+}
+
+.stepsContainer {
+    background: #f8f9fa !important;
+    padding: 2rem !important;
+    border-radius: 12px !important;
+}
+
+.guideStep {
+    gap: 1rem !important;
+    margin-bottom: 1.5rem !important;
+}
+
+.guideStep:last-child {
+    margin-bottom: 0 !important;
+}
+
+.stepAvatar {
+    flex-shrink: 0;
+}
+
+.stepTextContainer {
+    gap: 0.5rem;
+}
+
+.stepTitle {
+    color: #172b4d !important;
+    font-weight: 600 !important;
+    font-size: 1rem !important;
+    margin: 0 !important;
+}
+
+.stepDescription {
+    color: #5e6c84 !important;
+    font-size: 0.875rem !important;
+    line-height: 1.6 !important;
+}
+
+
+/* ============ Footer Styles ============ */
+.customFooter {
+    background: linear-gradient(135deg, #f5f7fa 0%, #e8f0fe 100%) !important;
+    border-top: 2px solid #e8eaed !important;
+    padding: 1rem 0 !important;
+}
+
+.footerContent {
+    gap: 1rem !important;
+}
+
+.footerIcon {
+    opacity: 0.8;
+}
+
+.footerMainText {
+    color: #172b4d !important;
+    font-weight: 600 !important;
+    font-size: 0.875rem !important;
+}
+
+.footerText {
+    color: #5e6c84 !important;
+    font-size: 0.875rem !important;
+}
+
+/* ============ Animations ============ */
+.statsCard,
+.quickActionsCard,
+.servicesCard,
+.systemHealthCard,
+.dataTestingCard,
+.gettingStartedCard {
+    animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============ Responsive Design ============ */
+@media (max-width: 1024px) {
+    .mainContainer {
+        padding: 1rem;
+    }
+    
+    .statsNumber {
+        font-size: 2rem !important;
+    }
+    
+    .welcomeContent {
+        padding: 1.5rem !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .mainContainer {
+        padding: 0.75rem;
+    }
+    
+    .headerTitle {
+        font-size: 1.25rem !important;
+    }
+    
+    .welcomeMainTitle {
+        font-size: 1.5rem !important;
+    }
+    
+    .statsNumber {
+        font-size: 1.75rem !important;
+    }
+    
+    .uniformServiceTile {
+        height: 160px !important;
+    }
+}
+
+@media (max-width: 600px) {
+    .headerLeft {
+        gap: 0.5rem;
+    }
+    
+    .headerLogo {
+        display: none;
+    }
+    
+    .dateLabel {
+        display: none !important;
+    }
+    
+    .welcomeAvatar {
+        display: none !important;
+    }
+    
+    .statsGrid {
+        gap: 0.75rem !important;
+    }
+    
+    .statsCard {
+        margin: 0 !important;
+    }
+}
+
+/* ============ Utility Classes ============ */
+.sapUiResponsiveMargin {
+    margin: 0 !important;
+}
+
+.sapUiContentPadding {
+    padding: 0 !important;
+}
+
