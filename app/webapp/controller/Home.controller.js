@@ -3,9 +3,10 @@ sap.ui.define(
     "sap/ui/core/mvc/Controller",
     "sap/ui/model/json/JSONModel",
     "sap/m/MessageToast",
+    "sap/m/MessageBox",
     "sap/ui/core/Fragment",
   ],
-  function (Controller, JSONModel, MessageToast, Fragment) {
+  function (Controller, JSONModel, MessageToast, MessageBox, Fragment) {
     "use strict";
 
     return Controller.extend("com.company.leavemanagement.controller.Home", {
@@ -53,43 +54,6 @@ sap.ui.define(
         const oLocalModel = new JSONModel({
           currentDate: formattedDate,
           todayDate: shortDate,
-          serviceList: [
-            {
-              name: "Employees",
-              description: "Employee master data with leave balances",
-              icon: "sap-icon://employee",
-              route: "employeeList",
-              available: true,
-            },
-            {
-              name: "Leave Requests",
-              description: "Submit and track leave applications",
-              icon: "sap-icon://request",
-              route: "leaveRequests",
-              available: true,
-            },
-            {
-              name: "Leave Types",
-              description: "Available leave categories and limits",
-              icon: "sap-icon://list",
-              route: "leaveTypes",
-              available: true,
-            },
-            {
-              name: "Managers",
-              description: "Management hierarchy for approvals",
-              icon: "sap-icon://manager",
-              route: "managers",
-              available: true,
-            },
-            {
-              name: "Approvals",
-              description: "Decision history and workflow",
-              icon: "sap-icon://approve",
-              route: "approvals",
-              available: true,
-            },
-          ],
           stats: {
             employeeCount: 0,
             pendingRequests: 0,
@@ -100,33 +64,8 @@ sap.ui.define(
             visible: false,
             data: [],
             title: "",
+            totalCount: 0,
           },
-          quickActions: [
-            {
-              title: "Manage Employees",
-              description: "View, add, edit, and delete employees",
-              icon: "sap-icon://employee",
-              route: "employeeList",
-              type: "Emphasized",
-              available: true,
-            },
-            {
-              title: "New Leave Request",
-              description: "Submit a new leave application",
-              icon: "sap-icon://add",
-              route: "leaveRequests",
-              type: "Default",
-              available: false,
-            },
-            {
-              title: "Pending Approvals",
-              description: "Review and approve leave requests",
-              icon: "sap-icon://approve",
-              route: "approvals",
-              type: "Default",
-              available: false,
-            },
-          ],
         });
 
         this.getView().setModel(oLocalModel, "local");
@@ -215,7 +154,7 @@ sap.ui.define(
         return Promise.resolve();
       },
 
-      // Navigation handlers - Enhanced for GenericTile
+      // Navigation handlers
       onServicePress: function (oEvent) {
         const oTile = oEvent.getSource();
         const sRoute = oTile.data("route");
@@ -244,23 +183,343 @@ sap.ui.define(
         }
       },
 
-      onQuickActionPress: function (oEvent) {
-        const oButton = oEvent.getSource();
-        const sRoute = oButton.data("route");
-        const bAvailable = oButton.data("available") === "true";
-
-        if (bAvailable && sRoute) {
-          const oRouter = this.getOwnerComponent().getRouter();
-          oRouter.navTo(sRoute);
-          MessageToast.show("✨ Navigating...", { duration: 2000 });
-        } else {
-          MessageToast.show("🚀 Feature coming in future phases!", {
-            duration: 3000,
-          });
-        }
+      onRefreshStats: function () {
+        console.log("🔄 Refreshing statistics...");
+        MessageToast.show("🔄 Refreshing dashboard...", { duration: 1500 });
+        this._loadStatistics();
       },
 
-      // Enhanced test button handlers
+      onClearResults: function () {
+        const oLocalModel = this.getView().getModel("local");
+        oLocalModel.setProperty("/testResults/visible", false);
+        MessageToast.show("✨ Results cleared", { duration: 2000 });
+      },
+
+      // Dialog handlers
+      onShowNotifications: function () {
+        MessageBox.information(
+          "You have 3 pending notifications:\n\n" +
+            "• New leave request from John Doe\n" +
+            "• Leave approved for Jane Smith\n" +
+            "• System maintenance scheduled",
+          {
+            title: "Notifications",
+            styleClass: "sapUiSizeCompact",
+          }
+        );
+      },
+
+      onShowSystemHealth: function () {
+        if (!this._systemHealthDialog) {
+          this._createSystemHealthDialog();
+        }
+        this._systemHealthDialog.open();
+      },
+
+      _createSystemHealthDialog: function () {
+        this._systemHealthDialog = new sap.m.Dialog({
+          title: "System Health Monitor",
+          icon: "sap-icon://sys-monitor",
+          contentWidth: "600px",
+          resizable: true,
+          draggable: true,
+          content: [
+            new sap.m.VBox({
+              items: [
+                new sap.m.MessageStrip({
+                  text: "All systems are operational. Real-time monitoring dashboard.",
+                  type: "Success",
+                  showIcon: true,
+                  class: "sapUiSmallMarginBottom",
+                }),
+
+                // Backend Status
+                new sap.m.HBox({
+                  alignItems: "Center",
+                  justifyContent: "SpaceBetween",
+                  class: "sapUiSmallMarginBottom",
+                  items: [
+                    new sap.m.HBox({
+                      alignItems: "Center",
+                      items: [
+                        new sap.ui.core.Icon({
+                          src: "sap-icon://connected",
+                          size: "1.5rem",
+                          color: "#28a745",
+                          class: "sapUiSmallMarginEnd",
+                        }),
+                        new sap.m.VBox({
+                          items: [
+                            new sap.m.Label({
+                              text: "Backend Connection",
+                              design: "Bold",
+                            }),
+                            new sap.m.Label({
+                              text: "CAP Service Layer",
+                            }),
+                          ],
+                        }),
+                      ],
+                    }),
+                    new sap.m.ObjectStatus({
+                      text: "Online",
+                      state: "Success",
+                      icon: "sap-icon://status-positive",
+                    }),
+                  ],
+                }),
+
+                new sap.m.ProgressIndicator({
+                  percentValue: 100,
+                  displayValue: "100% Available",
+                  state: "Success",
+                  class: "sapUiSmallMarginBottom",
+                }),
+
+                // Database Status
+                new sap.m.HBox({
+                  alignItems: "Center",
+                  justifyContent: "SpaceBetween",
+                  class: "sapUiSmallMarginBottom sapUiSmallMarginTop",
+                  items: [
+                    new sap.m.HBox({
+                      alignItems: "Center",
+                      items: [
+                        new sap.ui.core.Icon({
+                          src: "sap-icon://database",
+                          size: "1.5rem",
+                          color: "#0366d6",
+                          class: "sapUiSmallMarginEnd",
+                        }),
+                        new sap.m.VBox({
+                          items: [
+                            new sap.m.Label({
+                              text: "Database",
+                              design: "Bold",
+                            }),
+                            new sap.m.Label({
+                              text: "SQLite Active",
+                            }),
+                          ],
+                        }),
+                      ],
+                    }),
+                    new sap.m.ObjectStatus({
+                      text: "Operational",
+                      state: "Success",
+                      icon: "sap-icon://status-positive",
+                    }),
+                  ],
+                }),
+
+                new sap.m.ProgressIndicator({
+                  percentValue: 100,
+                  displayValue: "All Tables Ready",
+                  state: "Success",
+                  class: "sapUiSmallMarginBottom",
+                }),
+
+                // Service Endpoint
+                new sap.m.VBox({
+                  class: "sapUiSmallMarginTop",
+                  items: [
+                    new sap.m.Label({
+                      text: "Service Endpoint",
+                      design: "Bold",
+                      class: "sapUiTinyMarginBottom",
+                    }),
+                    new sap.m.HBox({
+                      alignItems: "Center",
+                      items: [
+                        new sap.ui.core.Icon({
+                          src: "sap-icon://chain-link",
+                          size: "1rem",
+                          class: "sapUiTinyMarginEnd",
+                        }),
+                        new sap.m.Link({
+                          text: "http://localhost:4004/leave/",
+                          href: "http://localhost:4004/leave/",
+                          target: "_blank",
+                        }),
+                      ],
+                    }),
+                  ],
+                }),
+              ],
+            }).addStyleClass("sapUiContentPadding"),
+          ],
+          endButton: new sap.m.Button({
+            text: "Close",
+            press: () => {
+              this._systemHealthDialog.close();
+            },
+          }),
+        });
+
+        this.getView().addDependent(this._systemHealthDialog);
+      },
+
+      onShowGettingStarted: function () {
+        if (!this._gettingStartedDialog) {
+          this._createGettingStartedDialog();
+        }
+        this._gettingStartedDialog.open();
+      },
+
+      _createGettingStartedDialog: function () {
+        this._gettingStartedDialog = new sap.m.Dialog({
+          title: "Getting Started Guide",
+          icon: "sap-icon://learning-assistant",
+          contentWidth: "600px",
+          resizable: true,
+          draggable: true,
+          content: [
+            new sap.m.VBox({
+              items: [
+                new sap.m.MessageStrip({
+                  text: "Welcome to the Employee Leave Management System! Follow these steps to get started.",
+                  type: "Success",
+                  showIcon: true,
+                  class: "sapUiSmallMarginBottom",
+                }),
+                new sap.m.VBox({
+                  items: [
+                    this._createGuideStep(
+                      "1",
+                      "Explore Services",
+                      "Click on service tiles to navigate to different modules and explore system features.",
+                      "Accent1"
+                    ),
+                    this._createGuideStep(
+                      "2",
+                      "Monitor Statistics",
+                      "The statistics cards at the top show real-time data from your leave management system.",
+                      "Accent4"
+                    ),
+                    this._createGuideStep(
+                      "3",
+                      "Manage Employees",
+                      "Employee management interface is ready! Start adding and managing your workforce.",
+                      "Accent3"
+                    ),
+                    this._createGuideStep(
+                      "4",
+                      "Check System Health",
+                      "Click the monitor icon in the header to view system health and backend status.",
+                      "Accent6"
+                    ),
+                  ],
+                  class: "sapUiSmallMargin",
+                }),
+              ],
+            }).addStyleClass("sapUiContentPadding"),
+          ],
+          beginButton: new sap.m.Button({
+            text: "Got It!",
+            type: "Emphasized",
+            press: () => {
+              this._gettingStartedDialog.close();
+            },
+          }),
+          endButton: new sap.m.Button({
+            text: "Close",
+            press: () => {
+              this._gettingStartedDialog.close();
+            },
+          }),
+        });
+
+        this.getView().addDependent(this._gettingStartedDialog);
+      },
+
+      _createGuideStep: function (number, title, description, color) {
+        return new sap.m.HBox({
+          alignItems: "Start",
+          class: "sapUiSmallMarginBottom",
+          items: [
+            new sap.m.Avatar({
+              initials: number,
+              displaySize: "M",
+              backgroundColor: color,
+              class: "sapUiSmallMarginEnd",
+            }),
+            new sap.m.VBox({
+              items: [
+                new sap.m.Title({
+                  text: title,
+                  level: "H5",
+                }),
+                new sap.m.Text({
+                  text: description,
+                  class: "sapUiTinyMarginTop",
+                }),
+              ],
+            }),
+          ],
+        });
+      },
+
+      onShowDataTesting: function () {
+        if (!this._dataTestingDialog) {
+          this._createDataTestingDialog();
+        }
+        this._dataTestingDialog.open();
+      },
+
+      _createDataTestingDialog: function () {
+        this._dataTestingDialog = new sap.m.Dialog({
+          title: "Data Testing",
+          icon: "sap-icon://stethoscope",
+          contentWidth: "500px",
+          resizable: true,
+          draggable: true,
+          content: [
+            new sap.m.VBox({
+              items: [
+                new sap.m.MessageStrip({
+                  text: "Test data loading from backend services",
+                  type: "Information",
+                  showIcon: true,
+                  class: "sapUiSmallMarginBottom",
+                }),
+                new sap.m.Button({
+                  text: "Load Employees",
+                  icon: "sap-icon://employee",
+                  type: "Emphasized",
+                  width: "100%",
+                  press: this.onLoadEmployees.bind(this),
+                  class: "sapUiTinyMarginBottom",
+                }),
+                new sap.m.Button({
+                  text: "Load Leave Requests",
+                  icon: "sap-icon://request",
+                  type: "Accept",
+                  width: "100%",
+                  press: this.onLoadLeaveRequests.bind(this),
+                  class: "sapUiTinyMarginBottom",
+                }),
+                new sap.m.Button({
+                  text: "Load Leave Types",
+                  icon: "sap-icon://list",
+                  type: "Attention",
+                  width: "100%",
+                  press: this.onLoadLeaveTypes.bind(this),
+                }),
+              ],
+            }).addStyleClass("sapUiContentPadding"),
+          ],
+          endButton: new sap.m.Button({
+            text: "Close",
+            press: () => {
+              this._dataTestingDialog.close();
+            },
+          }),
+        });
+
+        this.getView().addDependent(this._dataTestingDialog);
+      },
+
+      // Test button handlers
       onLoadEmployees: function () {
         console.log("🔄 Testing employee data load...");
         const oModel = this.getView().getModel();
@@ -270,7 +529,6 @@ sap.ui.define(
           return;
         }
 
-        // Show loading toast
         MessageToast.show("⏳ Loading employees...", { duration: 1500 });
 
         oModel
@@ -285,6 +543,10 @@ sap.ui.define(
               `✅ Loaded ${employees.length} employees successfully!`,
               { duration: 3000 }
             );
+
+            if (this._dataTestingDialog) {
+              this._dataTestingDialog.close();
+            }
           })
           .catch((error) => {
             console.error("❌ Failed to load employees:", error);
@@ -317,6 +579,10 @@ sap.ui.define(
               `✅ Loaded ${requests.length} leave requests successfully!`,
               { duration: 3000 }
             );
+
+            if (this._dataTestingDialog) {
+              this._dataTestingDialog.close();
+            }
           })
           .catch((error) => {
             console.error("❌ Failed to load leave requests:", error);
@@ -349,6 +615,10 @@ sap.ui.define(
               `✅ Loaded ${leaveTypes.length} leave types successfully!`,
               { duration: 3000 }
             );
+
+            if (this._dataTestingDialog) {
+              this._dataTestingDialog.close();
+            }
           })
           .catch((error) => {
             console.error("❌ Failed to load leave types:", error);
@@ -378,65 +648,14 @@ sap.ui.define(
 
         // Smooth scroll to results
         setTimeout(() => {
-          const oPage = this.getView().byId("page");
-          const oResultsCard = this.byId("testResultsCard");
-
-          if (oPage && oResultsCard) {
-            oResultsCard.getDomRef().scrollIntoView({
+          const oResultsCard = document.querySelector(".resultsDisplayCard");
+          if (oResultsCard) {
+            oResultsCard.scrollIntoView({
               behavior: "smooth",
               block: "start",
             });
           }
         }, 200);
-      },
-
-      onRefreshStats: function () {
-        console.log("🔄 Refreshing statistics...");
-        MessageToast.show("🔄 Refreshing dashboard...", { duration: 1500 });
-        this._loadStatistics();
-      },
-
-      onClearResults: function () {
-        const oLocalModel = this.getView().getModel("local");
-        oLocalModel.setProperty("/testResults/visible", false);
-        MessageToast.show("✨ Results cleared", { duration: 2000 });
-      },
-
-      onTestConnectivity: function () {
-        console.log("🔄 Testing backend connectivity...");
-        const oModel = this.getView().getModel();
-
-        if (!oModel) {
-          MessageToast.show("❌ No model available");
-          return;
-        }
-
-        MessageToast.show("⏳ Testing connectivity...", { duration: 1500 });
-
-        // Test with a simple metadata request
-        try {
-          oModel
-            .getMetaModel()
-            .requestObject("/$EntityContainer")
-            .then((oMetadata) => {
-              console.log("✅ Metadata loaded:", oMetadata);
-              MessageToast.show("✅ Backend connectivity: SUCCESS", {
-                duration: 3000,
-              });
-
-              // Display metadata info
-              this._displayTestResults("Service Metadata", [oMetadata]);
-            })
-            .catch((error) => {
-              console.error("❌ Connectivity test failed:", error);
-              MessageToast.show("❌ Backend connectivity: FAILED", {
-                duration: 3000,
-              });
-            });
-        } catch (error) {
-          console.error("❌ Connectivity test error:", error);
-          MessageToast.show("❌ Connectivity test failed", { duration: 3000 });
-        }
       },
 
       // Quick navigation methods

@@ -1,7 +1,7 @@
-/* Employee Leave Management System - Custom Styles */
+/* Employee Leave Management System - Professional Styles */
 
 .app-header {
-    background: linear-gradient(135deg, #0070f3 0%, #0051cc 100%);
+    background: linear-gradient(135deg, #1a2332 0%, #2c3e50 100%);
     color: white;
     padding: 1rem;
     text-align: center;
@@ -16,11 +16,11 @@
 }
 
 .status-connected {
-    background-color: #4caf50;
+    background-color: #28a745;
 }
 
 .status-disconnected {
-    background-color: #f44336;
+    background-color: #dc3545;
 }
 
 .welcome-container {
@@ -91,34 +91,35 @@
 
 /* Responsive margins */
 .sapUiResponsiveMargin {
-    margin: 0.5rem !important;
+    margin: 0 !important;
 }
 
 .sapUiMediumMarginBottom {
     margin-bottom: 0.5rem !important;
 }
+
 /* ========================================
    Employee Leave Management System
-   Enhanced Professional Dashboard Styles
+   Professional Dashboard Styles
    ======================================== */
 
 /* ============ Global Styles ============ */
 .dashboardPage {
-    background: #f5f7fa !important;
+    background: #fafbfc !important;
 }
 
 .mainContainer {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 1.5rem;
+    padding: 2rem 1.5rem;
 }
 
 /* ============ Header Styles ============ */
 .customHeaderBar {
-    background: linear-gradient(135deg, #0a6ed1 0%, #1e88e5 100%) !important;
-    box-shadow: 0 4px 12px rgba(10, 110, 209, 0.25) !important;
+    background: linear-gradient(135deg, #1a2332 0%, #2c3e50 100%) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12) !important;
     min-height: 1rem !important;
-    padding: 1rem 0 !important;
+    padding: 1.25rem 0 !important;
 }
 
 .headerLeft {
@@ -126,8 +127,8 @@
 }
 
 .headerLogo .sapMAvatar {
-    background: rgba(255, 255, 255, 0.2) !important;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.15) !important;
+    border: 2px solid rgba(255, 255, 255, 0.25);
 }
 
 .headerLogo .sapUiIcon {
@@ -141,11 +142,10 @@
 
 .headerTitle {
     color: white !important;
-    font-weight: 700 !important;
+    font-weight: 600 !important;
     font-size: 1.5rem !important;
     margin: 0 !important;
 }
-
 
 .headerRight {
     gap: 0.5rem;
@@ -153,75 +153,117 @@
 
 .dateLabel {
     color: white !important;
-    font-weight: 500;
+    font-weight: 400;
 }
 
 .headerButton .sapMBtnInner {
     color: white !important;
-    background: rgba(255, 255, 255, 0.15) !important;
-    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    background: transparent !important;
+    border: none !important;
+}
+
+.headerButton .sapMBtnIcon {
+    color: white !important;
 }
 
 .headerButton:hover .sapMBtnInner {
-    background: rgba(255, 255, 255, 0.25) !important;
+    background: rgba(255, 255, 255, 0.15) !important;
 }
 
-/* ============ Welcome Card Styles ============ */
-.welcomeCard {
-    background: linear-gradient(135deg, #ffffff 0%, #f8f9fb 100%) !important;
-    border-radius: 16px !important;
-    border: 1px solid #e8eaed !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
-    margin-bottom: 1.5rem !important;
+.notificationButton {
+    position: relative;
 }
 
-.welcomeContent {
-    padding: 2rem !important;
+/* Notification badge pulse animation */
+.notificationButton::after {
+    content: '';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    width: 8px;
+    height: 8px;
+    background: #dc3545;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
 }
 
-.welcomeText {
-    gap: 0.5rem;
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
+    }
+    50% {
+        box-shadow: 0 0 0 8px rgba(220, 53, 69, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+    }
 }
 
-.welcomeMainTitle {
-    color: #172b4d !important;
-    font-weight: 700 !important;
-    font-size: 2rem !important;
+/* ============ Compact Welcome Card ============ */
+.welcomeCardCompact {
+    background: #ffffff !important;
+    border-radius: 8px !important;
+    border: 1px solid #e1e4e8 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+    margin-bottom: 2rem !important;
+}
+
+.welcomeContentCompact {
+    padding: 1.25rem 1.75rem !important;
+}
+
+.welcomeLeftSection {
+    gap: 1rem;
+}
+
+.welcomeAvatarCompact {
+    flex-shrink: 0;
+}
+
+.welcomeTextCompact {
+    gap: 0.25rem;
+}
+
+.welcomeCompactTitle {
+    color: #24292e !important;
+    font-weight: 600 !important;
+    font-size: 1.25rem !important;
     margin: 0 !important;
 }
 
-.welcomeDescription {
-    color: #5e6c84 !important;
-    font-size: 1rem !important;
+.welcomeCompactDescription {
+    color: #586069 !important;
+    font-size: 0.875rem !important;
 }
 
-.dateText {
-    color: #0a6ed1 !important;
-    font-weight: 500;
+.welcomeRightSection {
+    gap: 0.5rem;
 }
 
-.welcomeAvatar {
-    opacity: 0.1;
+.dateTextCompact {
+    color: #586069 !important;
+    font-weight: 500 !important;
 }
 
 /* ============ Statistics Cards ============ */
 .statsGrid {
-    margin-bottom: 1.5rem !important;
-    gap: 1rem !important;
+    margin-bottom: 2rem !important;
+    gap: 1.25rem !important;
 }
 
 .statsCard {
-    border-radius: 16px !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08) !important;
+    border-radius: 8px !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
     overflow: hidden !important;
     position: relative !important;
-    border: 1px solid transparent !important;
+    border: 1px solid #e1e4e8 !important;
+    background: #ffffff !important;
 }
 
 .statsCard:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
 }
 
 .statsCard::before {
@@ -230,55 +272,23 @@
     top: 0;
     left: 0;
     right: 0;
-    height: 5px;
-}
-
-.blueStatsCard {
-    background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%) !important;
+    height: 4px;
 }
 
 .blueStatsCard::before {
-    background: linear-gradient(90deg, #0a6ed1, #1e88e5);
-}
-
-.blueStatsCard:hover {
-    border-color: #0a6ed1 !important;
-}
-
-.orangeStatsCard {
-    background: linear-gradient(135deg, #ffffff 0%, #fff8f0 100%) !important;
+    background: #0366d6;
 }
 
 .orangeStatsCard::before {
-    background: linear-gradient(90deg, #e65100, #f57c00);
-}
-
-.orangeStatsCard:hover {
-    border-color: #f57c00 !important;
-}
-
-.greenStatsCard {
-    background: linear-gradient(135deg, #ffffff 0%, #f0fff4 100%) !important;
+    background: #f9826c;
 }
 
 .greenStatsCard::before {
-    background: linear-gradient(90deg, #107e3e, #2e7d32);
-}
-
-.greenStatsCard:hover {
-    border-color: #2e7d32 !important;
-}
-
-.purpleStatsCard {
-    background: linear-gradient(135deg, #ffffff 0%, #f8f0ff 100%) !important;
+    background: #28a745;
 }
 
 .purpleStatsCard::before {
-    background: linear-gradient(90deg, #6a1b9a, #8e24aa);
-}
-
-.purpleStatsCard:hover {
-    border-color: #8e24aa !important;
+    background: #6f42c1;
 }
 
 .statsContent {
@@ -290,23 +300,23 @@
 }
 
 .statsLabel {
-    color: #5e6c84 !important;
+    color: #586069 !important;
     font-size: 0.75rem !important;
-    font-weight: 700 !important;
+    font-weight: 600 !important;
     text-transform: uppercase !important;
-    letter-spacing: 0.8px !important;
+    letter-spacing: 0.5px !important;
 }
 
 .statsNumber {
-    color: #172b4d !important;
-    font-weight: 800 !important;
-    font-size: 2.5rem !important;
+    color: #24292e !important;
+    font-weight: 700 !important;
+    font-size: 2.25rem !important;
     line-height: 1 !important;
     margin: 0.5rem 0 0 0 !important;
 }
 
 .statsUnit {
-    color: #5e6c84 !important;
+    color: #586069 !important;
     font-size: 0.875rem !important;
     font-weight: 500 !important;
     margin-left: 0.5rem !important;
@@ -314,126 +324,87 @@
 }
 
 .statsIconAvatar {
-    opacity: 0.2;
+    opacity: 0.15;
 }
 
 .blueIcon .sapUiIcon {
-    color: #0a6ed1 !important;
+    color: #0366d6 !important;
 }
 
 .orangeIcon .sapUiIcon {
-    color: #f57c00 !important;
+    color: #f9826c !important;
 }
 
 .greenIcon .sapUiIcon {
-    color: #2e7d32 !important;
+    color: #28a745 !important;
 }
 
 .purpleIcon .sapUiIcon {
-    color: #8e24aa !important;
+    color: #6f42c1 !important;
 }
 
 .statsProgress {
-    height: 6px !important;
+    height: 4px !important;
+    width: 100% !important;
 }
 
 .statsProgress .sapMPIBar {
-    height: 6px !important;
-    border-radius: 3px !important;
+    height: 4px !important;
+    border-radius: 2px !important;
+    width: 100% !important;
+}
+
+.statsProgress .sapMPIBarInner {
+    width: 100% !important;
 }
 
 .blueProgress .sapMPIBarInner {
-    background: linear-gradient(90deg, #0a6ed1, #1e88e5) !important;
+    background: #0366d6 !important;
 }
 
 .orangeProgress .sapMPIBarInner {
-    background: linear-gradient(90deg, #e65100, #f57c00) !important;
+    background: #f9826c !important;
 }
 
 .greenProgress .sapMPIBarInner {
-    background: linear-gradient(90deg, #107e3e, #2e7d32) !important;
+    background: #28a745 !important;
 }
 
 .purpleProgress .sapMPIBarInner {
-    background: linear-gradient(90deg, #6a1b9a, #8e24aa) !important;
+    background: #6f42c1 !important;
 }
 
 .systemStatus {
     margin-top: 0.5rem !important;
+    gap: 0.5rem;
 }
 
-/* ============ Quick Actions Card ============ */
-.quickActionsCard {
-    border-radius: 16px !important;
-    border: 1px solid #e8eaed !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
-    margin-bottom: 1.5rem !important;
+/* Pulse animation for online status */
+.pulseIcon {
+    animation: iconPulse 2s infinite;
 }
 
-.actionGrid {
-    padding: 1rem !important;
-    gap: 1rem !important;
-}
-
-.actionCard {
-    background: #ffffff !important;
-    border-radius: 12px !important;
-    padding: 1.5rem !important;
-    border: 2px solid #e8eaed !important;
-    transition: all 0.3s ease !important;
-}
-
-.activeAction:hover {
-    border-color: #0a6ed1 !important;
-    box-shadow: 0 8px 16px rgba(10, 110, 209, 0.15) !important;
-    transform: translateY(-4px);
-}
-
-.inactiveAction {
-    opacity: 0.7;
-}
-
-.actionHeader {
-    gap: 1rem !important;
-    margin-bottom: 1rem !important;
-}
-
-.actionAvatar {
-    flex-shrink: 0;
-}
-
-.actionTextContainer {
-    gap: 0.25rem;
-}
-
-.actionTitle {
-    color: #172b4d !important;
-    font-weight: 600 !important;
-    font-size: 1rem !important;
-    margin: 0 !important;
-}
-
-.actionText {
-    color: #5e6c84 !important;
-    font-size: 0.875rem !important;
-    line-height: 1.4 !important;
-}
-
-.actionButton {
-    margin-top: auto !important;
+@keyframes iconPulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
 }
 
 /* ============ Services Card ============ */
 .servicesCard {
-    border-radius: 16px !important;
-    border: 1px solid #e8eaed !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
-    margin-bottom: 1.5rem !important;
+    border-radius: 8px !important;
+    border: 1px solid #e1e4e8 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+    margin-bottom: 2rem !important;
+    background: #ffffff !important;
 }
 
 .servicesGrid {
-    padding: 1rem !important;
-    gap: 1rem !important;
+    padding: 1.5rem !important;
+    gap: 1.25rem !important;
 }
 
 .serviceTileWrapper {
@@ -441,49 +412,44 @@
 }
 
 .uniformServiceTile {
-    height: 180px !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    height: 160px !important;
+    transition: all 0.2s ease !important;
 }
 
 .uniformServiceTile .sapMGT {
-    border: 2px solid #e8eaed !important;
-    border-radius: 12px !important;
+    border: 1px solid #e1e4e8 !important;
+    border-radius: 8px !important;
     height: 100% !important;
+    background: #ffffff !important;
 }
 
 .uniformServiceTile:hover .sapMGT {
-    transform: translateY(-6px);
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12) !important;
+    transform: translateY(-3px) scale(1.01);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
 }
 
 .tileBlue:hover .sapMGT {
-    border-color: #0a6ed1 !important;
-    background: linear-gradient(135deg, #ffffff 0%, #e8f4fd 100%) !important;
+    border-color: #0366d6 !important;
 }
 
 .tileOrange:hover .sapMGT {
-    border-color: #f57c00 !important;
-    background: linear-gradient(135deg, #ffffff 0%, #fff3e0 100%) !important;
+    border-color: #f9826c !important;
 }
 
 .tileGreen:hover .sapMGT {
-    border-color: #2e7d32 !important;
-    background: linear-gradient(135deg, #ffffff 0%, #e8f5e9 100%) !important;
+    border-color: #28a745 !important;
 }
 
 .tilePurple:hover .sapMGT {
-    border-color: #8e24aa !important;
-    background: linear-gradient(135deg, #ffffff 0%, #f3e5f5 100%) !important;
+    border-color: #6f42c1 !important;
 }
 
 .tileTeal:hover .sapMGT {
-    border-color: #00897b !important;
-    background: linear-gradient(135deg, #ffffff 0%, #e0f2f1 100%) !important;
+    border-color: #17a2b8 !important;
 }
 
 .tileRed:hover .sapMGT {
-    border-color: #d32f2f !important;
-    background: linear-gradient(135deg, #ffffff 0%, #ffebee 100%) !important;
+    border-color: #dc3545 !important;
 }
 
 .disabledTile {
@@ -497,136 +463,45 @@
 
 .tileIcon .sapUiIcon {
     font-size: 3rem !important;
+    transition: transform 0.3s ease !important;
+}
+
+.uniformServiceTile:hover .tileIcon .sapUiIcon {
+    transform: scale(1.1);
 }
 
 .tileBlue .tileIcon .sapUiIcon {
-    color: #0a6ed1 !important;
+    color: #0366d6 !important;
 }
 
 .tileOrange .tileIcon .sapUiIcon {
-    color: #f57c00 !important;
+    color: #f9826c !important;
 }
 
 .tileGreen .tileIcon .sapUiIcon {
-    color: #2e7d32 !important;
+    color: #28a745 !important;
 }
 
 .tilePurple .tileIcon .sapUiIcon {
-    color: #8e24aa !important;
+    color: #6f42c1 !important;
 }
 
 .tileTeal .tileIcon .sapUiIcon {
-    color: #00897b !important;
+    color: #17a2b8 !important;
 }
 
 .tileRed .tileIcon .sapUiIcon {
-    color: #d32f2f !important;
-}
-
-.comingSoonBadge {
-    background: #fff3cd !important;
-    color: #856404 !important;
-    padding: 0.25rem 0.75rem !important;
-    border-radius: 12px !important;
-    font-size: 0.75rem !important;
-    font-weight: 600 !important;
-    margin-top: 0.5rem !important;
-}
-
-/* ============ System Health & Testing ============ */
-.systemGrid {
-    margin-bottom: 1.5rem !important;
-    gap: 1rem !important;
-}
-
-.systemHealthCard,
-.dataTestingCard {
-    border-radius: 16px !important;
-    border: 1px solid #e8eaed !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
-}
-
-.systemContent,
-.testingContent {
-    padding: 1.5rem !important;
-}
-
-.statusItem {
-    background: #f8f9fa !important;
-    padding: 1rem !important;
-    border-radius: 8px !important;
-    margin-bottom: 1rem !important;
-}
-
-.statusIcon {
-    margin-right: 1rem !important;
-}
-
-.statusLabel {
-    font-weight: 600 !important;
-    color: #172b4d !important;
-    font-size: 0.875rem !important;
-}
-
-.statusSubLabel {
-    color: #5e6c84 !important;
-    font-size: 0.75rem !important;
-}
-
-.statusProgress {
-    margin-bottom: 1rem !important;
-}
-
-.endpointSection {
-    background: #e8f4fd !important;
-    padding: 1rem !important;
-    border-radius: 8px !important;
-    border-left: 4px solid #0a6ed1 !important;
-    margin-bottom: 1rem !important;
-}
-
-.endpointLabel {
-    font-weight: 600 !important;
-    color: #172b4d !important;
-    margin-bottom: 0.5rem !important;
-}
-
-.endpointIcon {
-    margin-right: 0.5rem !important;
-}
-
-.endpointLink {
-    font-weight: 500 !important;
-}
-
-.testConnectivityButton {
-    margin-top: 0.5rem !important;
-}
-
-.testingMessageStrip {
-    margin-bottom: 1rem !important;
-}
-
-.testDataButton {
-    margin-bottom: 0.75rem !important;
-    transition: all 0.2s ease !important;
-}
-
-.testDataButton:hover {
-    transform: scale(1.02);
-}
-
-.testDataButton:last-child {
-    margin-bottom: 0 !important;
+    color: #dc3545 !important;
 }
 
 /* ============ Results Card ============ */
 .resultsDisplayCard {
-    border-radius: 16px !important;
-    border: 1px solid #e8eaed !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
-    margin-bottom: 1.5rem !important;
+    border-radius: 8px !important;
+    border: 1px solid #e1e4e8 !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+    margin-bottom: 2rem !important;
     animation: slideUp 0.4s ease !important;
+    background: #ffffff !important;
 }
 
 @keyframes slideUp {
@@ -666,7 +541,7 @@
 }
 
 .recordTitle {
-    color: #172b4d !important;
+    color: #24292e !important;
     font-weight: 600 !important;
 }
 
@@ -704,63 +579,10 @@
     background: #5c6370;
 }
 
-/* ============ Getting Started Card ============ */
-.gettingStartedCard {
-    border-radius: 16px !important;
-    border: 1px solid #e8eaed !important;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
-    margin-bottom: 1.5rem !important;
-}
-
-.guideContent {
-    padding: 1.5rem !important;
-}
-
-.guideMessageStrip {
-    margin-bottom: 1.5rem !important;
-}
-
-.stepsContainer {
-    background: #f8f9fa !important;
-    padding: 2rem !important;
-    border-radius: 12px !important;
-}
-
-.guideStep {
-    gap: 1rem !important;
-    margin-bottom: 1.5rem !important;
-}
-
-.guideStep:last-child {
-    margin-bottom: 0 !important;
-}
-
-.stepAvatar {
-    flex-shrink: 0;
-}
-
-.stepTextContainer {
-    gap: 0.5rem;
-}
-
-.stepTitle {
-    color: #172b4d !important;
-    font-weight: 600 !important;
-    font-size: 1rem !important;
-    margin: 0 !important;
-}
-
-.stepDescription {
-    color: #5e6c84 !important;
-    font-size: 0.875rem !important;
-    line-height: 1.6 !important;
-}
-
-
 /* ============ Footer Styles ============ */
 .customFooter {
-    background: linear-gradient(135deg, #f5f7fa 0%, #e8f0fe 100%) !important;
-    border-top: 2px solid #e8eaed !important;
+    background: #f6f8fa !important;
+    border-top: 1px solid #e1e4e8 !important;
     padding: 1rem 0 !important;
 }
 
@@ -769,27 +591,31 @@
 }
 
 .footerIcon {
-    opacity: 0.8;
+    opacity: 0.6;
 }
 
 .footerMainText {
-    color: #172b4d !important;
-    font-weight: 600 !important;
+    color: #24292e !important;
+    font-weight: 500 !important;
     font-size: 0.875rem !important;
 }
 
 .footerText {
-    color: #5e6c84 !important;
+    color: #586069 !important;
     font-size: 0.875rem !important;
+}
+
+.footerAdminButton {
+    color: #586069 !important;
+}
+
+.footerAdminButton:hover {
+    color: #0366d6 !important;
 }
 
 /* ============ Animations ============ */
 .statsCard,
-.quickActionsCard,
-.servicesCard,
-.systemHealthCard,
-.dataTestingCard,
-.gettingStartedCard {
+.servicesCard {
     animation: fadeIn 0.5s ease;
 }
 
@@ -807,29 +633,25 @@
 /* ============ Responsive Design ============ */
 @media (max-width: 1024px) {
     .mainContainer {
-        padding: 1rem;
+        padding: 1.5rem 1rem;
     }
     
     .statsNumber {
         font-size: 2rem !important;
     }
-    
-    .welcomeContent {
-        padding: 1.5rem !important;
-    }
 }
 
 @media (max-width: 768px) {
     .mainContainer {
-        padding: 0.75rem;
+        padding: 1rem 0.75rem;
     }
     
     .headerTitle {
         font-size: 1.25rem !important;
     }
     
-    .welcomeMainTitle {
-        font-size: 1.5rem !important;
+    .welcomeCompactTitle {
+        font-size: 1.1rem !important;
     }
     
     .statsNumber {
@@ -837,7 +659,7 @@
     }
     
     .uniformServiceTile {
-        height: 160px !important;
+        height: 140px !important;
     }
 }
 
@@ -854,12 +676,12 @@
         display: none !important;
     }
     
-    .welcomeAvatar {
+    .welcomeRightSection {
         display: none !important;
     }
     
     .statsGrid {
-        gap: 0.75rem !important;
+        gap: 1rem !important;
     }
     
     .statsCard {
@@ -867,12 +689,74 @@
     }
 }
 
-/* ============ Utility Classes ============ */
-.sapUiResponsiveMargin {
-    margin: 0 !important;
+/* ============ Scrollbar Styling ============ */
+.resultsList::-webkit-scrollbar {
+    width: 8px;
 }
 
-.sapUiContentPadding {
-    padding: 0 !important;
+.resultsList::-webkit-scrollbar-track {
+    background: #f8f9fa;
+    border-radius: 4px;
 }
 
+.resultsList::-webkit-scrollbar-thumb {
+    background: #d1d5db;
+    border-radius: 4px;
+}
+
+.resultsList::-webkit-scrollbar-thumb:hover {
+    background: #9ca3af;
+}
+
+/* ============================================
+   REPORTS PAGE - PROFESSIONAL STYLES
+   ============================================ */
+
+/* Minimal professional styling - no fancy gradients */
+
+/* Reports page background */
+.reportsPage .sapMPage {
+    background-color: #f7f7f7;
+}
+
+/* Panel styling */
+.sapUiResponsiveMargin .sapMPanel {
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+/* Table styling for better readability */
+.sapMPanel .sapMListTbl {
+    border: none;
+}
+
+.sapMPanel .sapMListTblCell {
+    border-bottom: 1px solid #e5e5e5;
+}
+
+/* Clean header styling */
+.sapMPanel .sapMPanelHdr {
+    border-bottom: 2px solid #0854a0;
+    background-color: #fafafa;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .sapUiResponsiveMargin {
+        margin: 0.5rem !important;
+    }
+}
+
+/* Print styles */
+@media print {
+    .sapMBtn,
+    .sapMSegBtn {
+        display: none !important;
+    }
+    
+    .sapMPanel {
+        page-break-inside: avoid;
+        box-shadow: none !important;
+        border: 1px solid #cccccc !important;
+    }
+}

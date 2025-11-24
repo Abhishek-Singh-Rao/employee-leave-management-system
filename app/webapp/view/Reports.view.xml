@@ -1,0 +1,436 @@
+<mvc:View
+    controllerName="com.company.leavemanagement.controller.Reports"
+    xmlns:mvc="sap.ui.core.mvc"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:layout="sap.ui.layout"
+    xmlns:f="sap.f"
+    xmlns:card="sap.f.cards"
+    displayBlock="true">
+
+    <Page 
+        title="Reports &amp; Analytics" 
+        showNavButton="true" 
+        navButtonPress="onNavBack"
+        class="sapUiResponsiveContentPadding">
+        
+        <headerContent>
+            <Button 
+                text="Refresh" 
+                icon="sap-icon://refresh" 
+                press="onRefresh"/>
+            <Button 
+                text="Export Reports" 
+                icon="sap-icon://excel-attachment" 
+                type="Emphasized"
+                press="onExportAll"/>
+        </headerContent>
+
+        <content>
+            <VBox class="sapUiSmallMarginTop">
+
+                <!-- Period Selection -->
+                <Panel headerText="Reporting Period" class="sapUiResponsiveMargin">
+                    <Toolbar>
+                        <Label text="Select Period:"/>
+                        <SegmentedButton selectedKey="{local>/selectedPeriod}" selectionChange="onPeriodChange">
+                            <items>
+                                <SegmentedButtonItem key="thisMonth" text="This Month"/>
+                                <SegmentedButtonItem key="lastMonth" text="Last Month"/>
+                                <SegmentedButtonItem key="last3Months" text="Last 3 Months"/>
+                                <SegmentedButtonItem key="thisYear" text="This Year"/>
+                            </items>
+                        </SegmentedButton>
+                        <ToolbarSpacer/>
+                        <Label text="{local>/dateRange/label}" class="sapUiTinyMarginEnd"/>
+                    </Toolbar>
+                </Panel>
+
+                <!-- Key Performance Indicators -->
+                <Panel headerText="Key Performance Indicators" class="sapUiResponsiveMargin">
+                    <content>
+                        <layout:Grid defaultSpan="XL3 L3 M6 S12" class="sapUiSmallMargin">
+                            
+                            <!-- Total Employees -->
+                            <VBox class="sapUiSmallMargin">
+                                <HBox alignItems="Center" class="sapUiTinyMarginBottom">
+                                    <core:Icon src="sap-icon://employee" size="1.5rem" color="#0854A0" class="sapUiTinyMarginEnd"/>
+                                    <Label text="Total Employees" class="sapUiMediumMarginEnd"/>
+                                </HBox>
+                                <Title text="{local>/metrics/totalEmployees}" level="H2"/>
+                                <Text text="Active in system" class="sapUiTinyMarginTop"/>
+                            </VBox>
+
+                            <!-- Total Leave Requests -->
+                            <VBox class="sapUiSmallMargin">
+                                <HBox alignItems="Center" class="sapUiTinyMarginBottom">
+                                    <core:Icon src="sap-icon://paper-plane" size="1.5rem" color="#0854A0" class="sapUiTinyMarginEnd"/>
+                                    <Label text="Leave Requests" class="sapUiMediumMarginEnd"/>
+                                </HBox>
+                                <Title text="{local>/metrics/totalRequests}" level="H2"/>
+                                <Text text="In selected period" class="sapUiTinyMarginTop"/>
+                            </VBox>
+
+                            <!-- Approval Rate -->
+                            <VBox class="sapUiSmallMargin">
+                                <HBox alignItems="Center" class="sapUiTinyMarginBottom">
+                                    <core:Icon src="sap-icon://accept" size="1.5rem" color="#2B7D2B" class="sapUiTinyMarginEnd"/>
+                                    <Label text="Approval Rate" class="sapUiMediumMarginEnd"/>
+                                </HBox>
+                                <Title text="{local>/metrics/approvalRate}%" level="H2"/>
+                                <Text text="Of total requests" class="sapUiTinyMarginTop"/>
+                            </VBox>
+
+                            <!-- Pending Requests -->
+                            <VBox class="sapUiSmallMargin">
+                                <HBox alignItems="Center" class="sapUiTinyMarginBottom">
+                                    <core:Icon src="sap-icon://pending" size="1.5rem" color="#E76500" class="sapUiTinyMarginEnd"/>
+                                    <Label text="Pending Requests" class="sapUiMediumMarginEnd"/>
+                                </HBox>
+                                <Title text="{local>/metrics/pendingRequests}" level="H2"/>
+                                <Text text="Awaiting approval" class="sapUiTinyMarginTop"/>
+                            </VBox>
+
+                        </layout:Grid>
+                    </content>
+                </Panel>
+
+                <!-- Leave Request Status Overview -->
+                <Panel headerText="Leave Request Status Overview" class="sapUiResponsiveMargin">
+                    <content>
+                        <VBox class="sapUiSmallMargin">
+                            <Table 
+                                items="{local>/statusSummary}"
+                                class="sapUiSmallMarginTop">
+                                <columns>
+                                    <Column width="30%">
+                                        <Text text="Status"/>
+                                    </Column>
+                                    <Column width="20%" hAlign="End">
+                                        <Text text="Count"/>
+                                    </Column>
+                                    <Column width="50%">
+                                        <Text text="Distribution"/>
+                                    </Column>
+                                </columns>
+                                <items>
+                                    <ColumnListItem>
+                                        <cells>
+                                            <ObjectStatus text="{local>status}" state="{local>state}" icon="{local>icon}"/>
+                                            <ObjectNumber number="{local>count}" emphasized="true"/>
+                                            <ProgressIndicator 
+                                                percentValue="{local>percentage}" 
+                                                displayValue="{local>percentage}%"
+                                                state="{local>state}"/>
+                                        </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                        </VBox>
+                    </content>
+                </Panel>
+
+                <!-- Two Column Layout for Reports -->
+                <layout:Grid defaultSpan="XL6 L6 M12 S12" class="sapUiResponsiveMargin">
+                    
+                    <!-- Leave Type Utilization Report -->
+                    <Panel headerText="Leave Type Utilization" class="sapUiNoMargin">
+                        <headerToolbar>
+                            <Toolbar>
+                                <Title text="Leave Type Utilization"/>
+                                <ToolbarSpacer/>
+                                <Button 
+                                    icon="sap-icon://excel-attachment" 
+                                    text="Export"
+                                    type="Transparent"
+                                    press="onExportLeaveTypeReport"/>
+                            </Toolbar>
+                        </headerToolbar>
+                        <content>
+                            <Table 
+                                items="{local>/leaveTypeUtilization}"
+                                growing="true"
+                                growingThreshold="10">
+                                <columns>
+                                    <Column>
+                                        <Text text="Leave Type"/>
+                                    </Column>
+                                    <Column hAlign="End">
+                                        <Text text="Requests"/>
+                                    </Column>
+                                    <Column hAlign="End">
+                                        <Text text="Days Used"/>
+                                    </Column>
+                                    <Column hAlign="End">
+                                        <Text text="% of Total"/>
+                                    </Column>
+                                </columns>
+                                <items>
+                                    <ColumnListItem>
+                                        <cells>
+                                            <ObjectIdentifier title="{local>leaveTypeName}"/>
+                                            <ObjectNumber number="{local>requestCount}"/>
+                                            <ObjectNumber number="{local>totalDays}" unit="days"/>
+                                            <Text text="{local>percentage}%"/>
+                                        </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                        </content>
+                    </Panel>
+
+                    <!-- Employee Leave Balance Report -->
+                    <Panel headerText="Employee Leave Balance" class="sapUiNoMargin">
+                        <headerToolbar>
+                            <Toolbar>
+                                <Title text="Employee Leave Balance"/>
+                                <ToolbarSpacer/>
+                                <Button 
+                                    icon="sap-icon://excel-attachment" 
+                                    text="Export"
+                                    type="Transparent"
+                                    press="onExportEmployeeReport"/>
+                            </Toolbar>
+                        </headerToolbar>
+                        <content>
+                            <Table 
+                                items="{local>/employeeBalances}"
+                                growing="true"
+                                growingThreshold="5">
+                                <columns>
+                                    <Column>
+                                        <Text text="Employee ID"/>
+                                    </Column>
+                                    <Column>
+                                        <Text text="Name"/>
+                                    </Column>
+                                    <Column hAlign="End">
+                                        <Text text="Balance"/>
+                                    </Column>
+                                    <Column hAlign="End">
+                                        <Text text="Requests"/>
+                                    </Column>
+                                </columns>
+                                <items>
+                                    <ColumnListItem>
+                                        <cells>
+                                            <Text text="{local>empId}"/>
+                                            <Text text="{local>name}"/>
+                                            <ObjectNumber 
+                                                number="{local>leaveBalance}" 
+                                                unit="days"
+                                                state="{local>balanceState}"/>
+                                            <Text text="{local>requestCount}"/>
+                                        </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                        </content>
+                    </Panel>
+
+                </layout:Grid>
+
+                <!-- Manager Approval Summary -->
+                <Panel headerText="Manager Approval Summary" class="sapUiResponsiveMargin">
+                    <headerToolbar>
+                        <Toolbar>
+                            <Title text="Manager Approval Summary"/>
+                            <ToolbarSpacer/>
+                            <Button 
+                                icon="sap-icon://excel-attachment" 
+                                text="Export"
+                                type="Transparent"
+                                press="onExportManagerReport"/>
+                        </Toolbar>
+                    </headerToolbar>
+                    <content>
+                        <Table 
+                            items="{local>/managerSummary}"
+                            growing="true"
+                            growingThreshold="10">
+                            <columns>
+                                <Column width="25%">
+                                    <Text text="Manager Name"/>
+                                </Column>
+                                <Column width="15%" hAlign="End">
+                                    <Text text="Total Processed"/>
+                                </Column>
+                                <Column width="15%" hAlign="End">
+                                    <Text text="Approved"/>
+                                </Column>
+                                <Column width="15%" hAlign="End">
+                                    <Text text="Rejected"/>
+                                </Column>
+                                <Column width="15%" hAlign="End">
+                                    <Text text="Pending"/>
+                                </Column>
+                                <Column width="15%" hAlign="End">
+                                    <Text text="Approval Rate"/>
+                                </Column>
+                            </columns>
+                            <items>
+                                <ColumnListItem>
+                                    <cells>
+                                        <ObjectIdentifier title="{local>managerName}"/>
+                                        <ObjectNumber number="{local>totalProcessed}"/>
+                                        <ObjectNumber number="{local>approved}" state="Success"/>
+                                        <ObjectNumber number="{local>rejected}" state="Error"/>
+                                        <ObjectNumber number="{local>pending}" state="Warning"/>
+                                        <Text text="{local>approvalRate}%"/>
+                                    </cells>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
+                    </content>
+                </Panel>
+
+                <!-- Monthly Leave Trend -->
+                <Panel headerText="Monthly Leave Request Trend" class="sapUiResponsiveMargin">
+                    <content>
+                        <VBox class="sapUiSmallMargin">
+                            <Table 
+                                items="{local>/monthlyTrend}"
+                                class="sapUiSmallMarginTop">
+                                <columns>
+                                    <Column width="20%">
+                                        <Text text="Month"/>
+                                    </Column>
+                                    <Column width="15%" hAlign="End">
+                                        <Text text="Requests"/>
+                                    </Column>
+                                    <Column width="15%" hAlign="End">
+                                        <Text text="Approved"/>
+                                    </Column>
+                                    <Column width="15%" hAlign="End">
+                                        <Text text="Rejected"/>
+                                    </Column>
+                                    <Column width="15%" hAlign="End">
+                                        <Text text="Pending"/>
+                                    </Column>
+                                    <Column width="20%">
+                                        <Text text="Approval Rate"/>
+                                    </Column>
+                                </columns>
+                                <items>
+                                    <ColumnListItem>
+                                        <cells>
+                                            <Text text="{local>month}" class="sapUiMediumMarginEnd"/>
+                                            <ObjectNumber number="{local>totalRequests}"/>
+                                            <ObjectNumber number="{local>approved}" state="Success"/>
+                                            <ObjectNumber number="{local>rejected}" state="Error"/>
+                                            <ObjectNumber number="{local>pending}" state="Warning"/>
+                                            <ProgressIndicator 
+                                                percentValue="{local>approvalRate}" 
+                                                displayValue="{local>approvalRate}%"
+                                                state="Success"/>
+                                        </cells>
+                                    </ColumnListItem>
+                                </items>
+                            </Table>
+                        </VBox>
+                    </content>
+                </Panel>
+
+                <!-- Audit Trail -->
+                <Panel headerText="Recent Leave Transactions" class="sapUiResponsiveMargin">
+                    <headerToolbar>
+                        <Toolbar>
+                            <Title text="Recent Leave Transactions"/>
+                            <ToolbarSpacer/>
+                            <Button 
+                                icon="sap-icon://excel-attachment" 
+                                text="Export"
+                                type="Transparent"
+                                press="onExportAuditTrail"/>
+                        </Toolbar>
+                    </headerToolbar>
+                    <content>
+                        <Table 
+                            items="{local>/auditTrail}"
+                            growing="true"
+                            growingThreshold="20">
+                            <columns>
+                                <Column width="15%">
+                                    <Text text="Date"/>
+                                </Column>
+                                <Column width="15%">
+                                    <Text text="Employee"/>
+                                </Column>
+                                <Column width="15%">
+                                    <Text text="Leave Type"/>
+                                </Column>
+                                <Column width="10%" hAlign="Center">
+                                    <Text text="Days"/>
+                                </Column>
+                                <Column width="15%">
+                                    <Text text="Action"/>
+                                </Column>
+                                <Column width="15%">
+                                    <Text text="Processed By"/>
+                                </Column>
+                                <Column width="15%">
+                                    <Text text="Status"/>
+                                </Column>
+                            </columns>
+                            <items>
+                                <ColumnListItem>
+                                    <cells>
+                                        <Text text="{path: 'local>timestamp', formatter: '.formatDate'}"/>
+                                        <Text text="{local>employeeName}"/>
+                                        <Text text="{local>leaveType}"/>
+                                        <ObjectNumber number="{local>days}" unit="days"/>
+                                        <Text text="{local>action}"/>
+                                        <Text text="{local>processedBy}"/>
+                                        <ObjectStatus text="{local>status}" state="{local>statusState}"/>
+                                    </cells>
+                                </ColumnListItem>
+                            </items>
+                        </Table>
+                    </content>
+                </Panel>
+
+                <!-- Summary Statistics -->
+                <Panel headerText="Summary Statistics" class="sapUiResponsiveMargin">
+                    <content>
+                        <layout:Grid defaultSpan="XL3 L3 M6 S12" class="sapUiSmallMargin">
+                            
+                            <VBox class="sapUiSmallMargin">
+                                <Label text="Total Leave Days Taken"/>
+                                <Title text="{local>/summary/totalDaysTaken}" level="H3"/>
+                                <Text text="In selected period"/>
+                            </VBox>
+
+                            <VBox class="sapUiSmallMargin">
+                                <Label text="Average Leave Balance"/>
+                                <Title text="{local>/summary/avgLeaveBalance}" level="H3"/>
+                                <Text text="Per employee"/>
+                            </VBox>
+
+                            <VBox class="sapUiSmallMargin">
+                                <Label text="Low Balance Employees"/>
+                                <Title text="{local>/summary/lowBalanceCount}" level="H3"/>
+                                <Text text="Less than 5 days"/>
+                            </VBox>
+
+                            <VBox class="sapUiSmallMargin">
+                                <Label text="Most Used Leave Type"/>
+                                <Title text="{local>/summary/mostUsedLeaveType}" level="H3"/>
+                                <Text text="By request count"/>
+                            </VBox>
+
+                        </layout:Grid>
+                    </content>
+                </Panel>
+
+                <!-- Loading Indicator -->
+                <VBox visible="{local>/isLoading}" alignItems="Center" class="sapUiLargeMarginTop sapUiLargeMarginBottom">
+                    <BusyIndicator size="3rem"/>
+                    <Text text="Loading report data..." class="sapUiMediumMarginTop"/>
+                </VBox>
+
+            </VBox>
+        </content>
+
+    </Page>
+
+</mvc:View>
